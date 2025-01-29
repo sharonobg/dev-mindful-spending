@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base{
+  body{@apply overflow-x-hidden w-full}
+  /* body{
+    
+    background:linear-gradient(45deg, white ,white,blue 20%, white 10%,white);
+    height: 100vh;
+  } */
+  form{@apply flex flex-row flex-wrap gap-5 my-3 self-center}
+  button{@apply w-fit bg-blue-400 rounded-md p-3 text-white font-semibold ml-0}
+  input,button{margin: 5px;}
+  button { @apply flex px-4 py-2 rounded-lg hover:opacity-80 }
+ button.self-start[type='submit']{@apply bg-blue-400 rounded-md py-2 px-3 text-white font-semibold}
+ button[type="submit"]{@apply justify-center}
+ form input, form select {
+  @apply px-4 py-2 mt-4 mx-5 border border-gray-300 text-gray-500 no-underline p-4
+
+}
+
+  input, select,textarea {
+    @apply px-3 py-3 rounded-md my-3 bg-slate-50 hover:bg-slate-200
+  }
+  nav{@apply gap-5 flex flex-col lg:flex-row align-middle w-screen px-8 py-3 bg-blue-400}
+
+nav a {
+  @apply font-bold text-blue-100 gap-5
+  
+}
+
+  h1 {
+    @apply 
+    my-4
+    text-xl
+    text-center
+    text-blue-500
+    font-bold
+  }
+  h2{
+    @apply text-blue-700 text-lg
+  }
+  main{
+    
+    @apply flex flex-col items-center place-content-center text-center px-0 py-5 w-full overflow-x-hidden
+  }
+  *, ::before, ::after {
+    border-color: #ffbf00; 
+  }
+}
+
+.hamburger-menu{@apply flex flex-col md:flex-row gap-5 }
+/* .hamburger.open{left:0;transition: 1s;} */
+.dashboardDiv{@apply place-items-center flex flex-col w-full}
+form.form-column{@apply flex flex-col p-4 flex-wrap gap-5 my-3}
+.signinform {
+  label {@apply mt-auto mb-auto ml-1 mr-1 text-blue-600 text-lg font-bold}
+  input {@apply mt-0 mb-0 ml-1 mr-1}
+  button {@apply bg-blue-400 active:bg-green-500 hover:bg-blue-800 text-white font-bold rounded-lg text-center}
+}
+nav a.active { 
+  @apply text-amber-500
+  }
+
+.largeTxt {@apply text-3xl
+  text-center
+  text-blue-500
+  font-bold
+}
+.backgroundDiv{
+  
+  background-position: bottom;
+  background: linear-gradient(45deg, #fff, #fff, blue 20%, #fff 0, #fff);
+  height: 100vh;
+  width: 100%;
+  max-width:100%;
+  z-index: -1;
+  position: fixed;
+  background-repeat:no-repeat;
+  overflow:hidden;
+  
+}
+
+.mainDiv {@apply max-h-screen overflow-y-auto}
+h1.border{@apply border-b-2 
+  border-blue-500 
+  border-spacing-1}
+.transactionsList > div{
+  @apply  flex flex-row h-auto p-0  my-0
+}
+.spreadsheetCont {
+  @apply mt-5 flex p-0 flex-col  justify-center place-items-center items-center break-words
+}
+/*.spreadsheetCont > .sheet,.transactionsList > .sheet,*/
+.sheet,.spkey{
+  @apply bg-white m-0 w-screen flex flex-row h-auto p-0 border border-collapse border-amber-500 break-words justify-center max-w-[800px]
+}
+.spreadsheetCont > div{@apply bg-white}
+.spreadsheetCont >.sheet>div,
+.sheet > div,.spkey > div {
+  /* overflow: auto; */
+  word-wrap: break-word;
+  @apply w-full border-collapse border border-amber-500 content-center justify-center
+}
+.editCol > a {@apply flex justify-center}
+
+  ul{margin:25px;border:1px solid blue;padding:45px 0 10px;}
+  li {
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
+    align-items:center;
+  }
+  li>span {
+    width: 15%;
+    margin: 0;
+    flex-direction: row;
+    border:1px solid violet;
+    border-collapse:collapse;
+    text-align:center;
+  }
+  nav {
+    font-size:small;
+    background: blueviolet;
+    padding: 10px 30px;
+    max-width:60%;
+    overflow:hidden;
+  }
+  nav button{padding:0;margin:0;}
+  nav ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    text-decoration: none;
+    align-content: center;
+    gap: 30px;
+    padding: 0;
+    margin: 10px 30px;
+    border: none;
+  
+  }
+  nav ul li>span,nav ul li>a{
+    width: auto;
+    margin: 0;
+    border: none;
+    text-align: center;
+    font-weight:bold;
+  }
+  nav ul a, nav p {
+    text-decoration: none;
+    color: #fff;
+    font-weight:700;
+    }
+    .circle {
+    padding: 2rem;
+    background: blue;
+    color: white;
+    font-weight: bold;
+    width: 6rem;
+    border-radius: 3rem;
+    text-align: center;
+    font-size: larger;
+    display: flex;
+    justify-content: center;
+    align-content: flex-end;
+  }
