@@ -11,7 +11,7 @@ export async function GET(req:NextRequest,{ params}: { params:{slug: string }}){
     
     try{
     const id = {params};
-    const category = await Category.findById(id).select('-password')
+    const category = await Category.findById(id).lean();
     return new Response(JSON.stringify(category),{status:200})
 } catch (error) {
     return new Response(JSON.stringify(null),{status:500})

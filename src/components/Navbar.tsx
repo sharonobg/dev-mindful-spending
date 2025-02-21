@@ -64,7 +64,7 @@ export default function Navbar() {
                 <Link className={`link ${pathname === '/add-income' ? 'active' : ''}`} href = {"/add-income"}>Add income</Link>
                 <Link className={`link ${pathname === '/transaction' ? 'active' : ''}`} href = {"/transaction"}>Add a transaction</Link>
                 <Link className={`link ${pathname === '/add-incomeplan' ? 'active' : ''}`} href = {"/add-incomeplan"} target="_blank">Income Plan</Link>
-            <Link className={`link ${pathname === '/spendingplan' ? 'active' : ''}`} href = {"/spendingplan"} target="_blank">Spending Plan</Link>
+            <Link className={`link ${pathname === '/spending_plans' ? 'active' : ''}`} href = {"/spendingplans"} target="_blank">Spending Plans</Link>
             </>)}
                     </div>
                     </>): <div>

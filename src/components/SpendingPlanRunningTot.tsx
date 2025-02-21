@@ -608,17 +608,14 @@ const comboplans = await Transaction.aggregate([
           //const comboplans = await comboPlans();
           const getMonth = new Date().getMonth()+1
           const newD = new Date()
-          const month = newD.toLocaleString('default', { month: 'long' });
+          //const month = newD.toLocaleString('default', { month: 'long' });
           const getYear = new Date().getFullYear()
           const getMonthYear = getMonth +'/' +getYear;
           // const propsMonth = {props.fmonht}
           // const propsYear = {props.fyear}
     return(
       <div>
-      <h1>SP  CategoryView</h1>
-       {/*<pre>GrandTotals:{JSON.stringify(grandtotals, null, 2)}</pre> 
-      <pre>Comboplans:{JSON.stringify(comboplans, null, 2)}</pre>*/} 
-        <h1>Planned and Actual Spending Running Totals for: {props.fmonth}/{props.fyear}.<br /> Showing: {props.category}</h1>
+      <h1>Planned and Actual Spending Running Totals for: {props.fmonth}/{props.fyear}.<br /> Showing: {props.category}</h1>
       <div className="my-5 flex flex-col place-items-center spreadsheetCont">
         <div className="sheet flex flex-row  w-full col-6 bg-white font-bold text-sm">
           <div className="font-bold border border-amber-500 w-full p-2 ">Category</div>
@@ -628,11 +625,12 @@ const comboplans = await Transaction.aggregate([
           <div className="font-bold border border-amber-500 w-full p-2 ">Difference</div>
           <div className="font-bold border border-amber-500 w-full p-2 ">Explain Diff</div>
         </div>
-    {comboplans?.length > -1 ? (comboplans.map((comboplan) =>
-      <div key={comboplan._id.runningTotalId} className="spkey flex flex-row flex-col-6">
+       {/*} <pre>GrandTotals:{JSON.stringify(grandtotals, null, 2)}</pre>*/} 
+    {comboplans?.length > -1 ? (comboplans.map((comboplan,index:number) =>
+      <div key={index} className="spkey flex flex-row flex-col-6">
             <div className="w-[200px]">{comboplan._id.categoryTitle}</div>
             <div className="">{comboplan?._id.mycategories?.categorynotes}</div>
-            <div className="">{parseFloat(comboplan?._id.mycategories?.planamount)}</div>
+            <div className="">{parseFloat(comboplan?._id.mycategories?.planamount).toFixed(2)}</div>
             <div className="">{parseFloat(comboplan?.transactionamount).toFixed(2)}</div>
             <div className="">{parseFloat(comboplan?.difference).toFixed(2)}</div>
             <div className="">{comboplan?._id.mycategories?.explain}</div>
@@ -640,10 +638,10 @@ const comboplans = await Transaction.aggregate([
         </div>
         )):"nothing here" }
        {grandtotals?.length > -1 ? (grandtotals.map((grandtotal:any,index:number) =>
-        <div key={grandtotal[index]} className="spkey flex flex-row flex-col-6 font-bold text-sm">
+        <div key={index} className="spkey flex flex-row flex-col-6 font-bold text-sm">
           
           <div className="">Total:<br />{grandtotal._id.month}/{grandtotal._id.year}</div>
-          <div className=""></div>
+          <div className="">index{index}</div>
           <div className="">{parseFloat(grandtotal?._id.planamount).toFixed(2)}</div>
           <div className="">{parseFloat(grandtotal?.totalamount).toFixed(2)}</div>
           <div className="">{parseFloat(grandtotal?.difference).toFixed(2)}</div>

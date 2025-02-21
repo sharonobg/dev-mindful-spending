@@ -1,0 +1,15 @@
+import {z} from 'zod';
+
+  
+export const SpendingPlanDataSchema = z.object({
+    planmonthyear:z.date().safeParse(new Date()),
+    mycategories:{
+        mycategoryId:z.string().nonempty(),
+        isChecked:z.boolean().nonempty(),
+        planamount:.number().gt(0).nonempty(),
+        explain:z.string(),
+        categorynotes:z.string(),
+    }
+    
+}
+)

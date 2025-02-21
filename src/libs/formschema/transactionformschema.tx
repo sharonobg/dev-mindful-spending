@@ -1,0 +1,10 @@
+import {z} from 'zod';
+
+
+export const TransactionDataSchema = z.object({
+    transdate:z.date().safeParse(new Date()),
+    acctype:z.enum(["debit", "cash", "bank_account","other"]),
+    categoryId:z.string().nonempty(),
+    descr:z.string().nonempty(),
+    amount:z.number().gt(0).nonempty(),
+})

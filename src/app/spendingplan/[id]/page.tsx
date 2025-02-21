@@ -16,7 +16,7 @@ type MyCategoriesType={
   mycategoryId:string,
   isChecked:boolean,
   explain:string,
-  categoryNotes:string,
+  categorynotes:string,
   planamount:string,
 }
 type SpendingplanType={
@@ -29,93 +29,99 @@ type SpendingplanType={
   // incomeamount?:number,
 }
     
-const Edit = ({ params }: { params: { id: string } }) => {
+const EditSpendingPlan = ({ params }: { params: { id: string } }) => {
   
-    const [selections,setSelections]=useState([
-      {mycategoryId:'',
-        categorynotes:'',
-        planamount:'',
-        explain:'',
-        isChecked:true,
-        checked:true}
-    ])
+    // const [selections,setSelections]=useState([
+    //   {mycategoryId:'',
+    //     categorynotes:'',
+    //     planamount:'',
+    //     explain:'',
+    //     isChecked:true,
+    //     checked:true}
+    // ])
   const[selectedcats,setSelectedcats]=useState<string[]>([])
-    const [category,setCategory]=useState("")
+    //const [category,setCategory]=useState("")
     const [explain,setExplain]=useState("")
     const [categories,setCategories]=useState<Category[]>([])
     const [mycategories,setMycategories]=useState([])
     const [planmonthyear,setPlanmonthyear]=useState(new Date())
-    const [spendingplanDetails,setSpendingplanDetails]=useState<SpendingplanType>({
-      planmonthyear:new Date(),
-      mycategories:[{
-        mycategoryId:'',
-        isChecked:true,
-        explain:'',
-        categoryNotes:'',
-        planamount:'0.00',
-      }],
-    })
     const [planamount,setPlanamount]=useState("")
     //const [categoryId,setCategoryId]= useState("")
     //const [title,setTitle]=useState("")
     const [categorynotes,setCategorynotes]= useState<string>("")
     const [mycategoryId,setMycategoryId]= useState("")
     const [isChecked, setIsChecked] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const {data:session,status} = useSession();
     //const isCheckedId="";
     const router= useRouter();
+    const [spendingplanDetails,setSpendingplanDetails]=useState<SpendingplanType>({
+      planmonthyear:planmonthyear,
+      mycategories:[{
+        mycategoryId:mycategoryId,
+        isChecked:isChecked,
+        explain:explain,
+        categorynotes:categorynotes,
+        planamount:planamount,
+      }],
+    })
     useEffect(() => {
-      fetch('/api/category')
-        .then((res) => res.json())
-        .then(({categories}) => {
-          setCategories(categories)
-          //get an array of categories that are in the plan - Maybe server size then for those categories set isChecked(true)
-          //setIsChecked(true)
-        })
-        /* jshint ignore:start*/
-    }, []);
-    /* jshint ignore:end*/
+      async function fetchCategories() { 
+        const res = await fetch(`/api/category`
+                    ,{cache:'no-store'}
+            )
+        const {categories} = await res.json()
+        setCategories(categories)
+        setIsLoading(false)
+      }
+      fetchCategories();
+        }, []);
   
     useEffect(() => {
-    async function fetchSpendingplan() {  
-                           
+    async function fetchSpendingplan() {
       const res = await fetch(`/api/spendingplan/${params.id}`
       ,{cache:'no-store'}
       )
       const spendingplan = await res.json()
-      //console.log('fetch spendingPlan page id',spendingplan)
-      const planmonthyearPrev = spendingplan.planmonthyear;
-      //const planamountPrev=spendingplan?.amount.$numberDecimal;
-      //const dataamount=spendingplan.mycategories.planamount.$numberDecimal;
-      //const mycats=spendingplan.mycategories;
+      console.log('fetch spendingPlan page id',spendingplan)
+      const planmonthyearPrev = spendingplan?.planmonthyear.toString();
+      //const spdataamount=spendingplan?.mycategories.planamount.$numberDecimal;
+      //console.log('spdataamount')
+      const mycategoriesArr = {
+        mycategoryId:spendingplan?.mycategories.mycategoryId,
+        isChecked:spendingplan?.mycategories.isChecked,
+        explain:spendingplan?.mycategories.explain,
+        categorynotes:spendingplan?.mycategories.categorynotes,
+        planamount:spendingplan?.mycategories.planamount,
+      }
+      console.log('mycategoriesArr',mycategoriesArr);
       setSpendingplanDetails({
-        planmonthyear:planmonthyearPrev,
-        mycategories:spendingplan.mycategories,
-        // mycategories:[{
-        //   mycategoryId:spendingplan?.mycategories.mycategoryId,
-        //   isChecked:true,
-        //   explain:spendingplan?.mycategories.explain,
-        //   categoryNotes:spendingplan?.mycategories.categoryNotes,
-        //   planamount:spendingplan?.mycategories.planamount,
-        // }]
+        planmonthyear:spendingplan.planmonthyear,
+        mycategories:[{
+          mycategoryId:spendingplan?.mycategories.mycategoryId,
+          isChecked:spendingplan?.mycategories.isChecked,
+          explain:spendingplan?.mycategories.explain,
+          categorynotes:spendingplan?.mycategories.categorynotes,
+          planamount:spendingplan?.mycategories.planamount,
+        }]
+        // spendingplan?.mycategories=[{
+          // mycategoryId:spendingplan?.mycategories.mycategoryId,
+          // isChecked:spendingplan?.mycategories.isChecked,
+          // explain:spendingplan?.mycategories.explain,
+          // categorynotes:spendingplan?.mycategories.categorynotes,
+          // planamount:spendingplan?.mycategories.planamount,
+        // }],
        })
-       console.log(spendingplanDetails)
       }
    fetchSpendingplan()
-
   /* jshint ignore:start*/
   },[])
-  /* jshint ignore:end*/
-  //console.log('spendingplanDetails after useEffect',spendingplanDetails)
     if(status === 'unauthenticated'){
       return <p className="font-bold text-red-500 text-center">Access Denied</p>
   }
-
-
 if(status === 'loading'){
     return <p>Loading...</p>
 }
-
 
     const handleCategory = async (e:React. FormEvent<HTMLInputElement>) => {
       
@@ -134,24 +140,8 @@ if(status === 'loading'){
         //const target = e.target;
         
       }
-//       const handleCategories = async (e:React.FormEvent<HTMLFormElement>) => {
-//         e.preventDefault();
-//         const target = e.currentTarget;
-//         const catid = target.id;
-//       setSelections({
-//         mycategoryId:mycategoryId,
-//         categorynotes:{categorynotes},
-//         planamount:{planamount},
-//         explain:{explain},
-//         isChecked:true,
-//         //checked:true
-//         //authorId:session?.user._id
-//     })
-// mycategories.push({selections})
-//console.log('set my categories',mycategories)
-     // }
 
-//console.log('spendingplanDetails after set: ',spendingplanDetails)
+console.log('spendingplanDetails after set: ',spendingplanDetails)
 //on page load - any category that matches mycategoryId should be checked
 
 //for edit:
@@ -235,8 +225,8 @@ const handleDeleteA= async (e:React.FormEvent<HTMLFormElement>) => {
 
 return(
     <>
-     <pre>spendingplanDetails:{JSON.stringify(spendingplanDetails, null, 2)}</pre> 
-    <div className="flex flex-col self-center place-items-center border-l-orange-100">
+     {/* <pre>spendingplanDetails:{JSON.stringify(spendingplanDetails, null, 2)}</pre> */}
+    <div className="flex flex-col self-center place-items-center border-l-orange-100"> 
     <h2 className="mb-8 text-lg font-bold text-center">Edit categories, notes and planned amounts for your spending plan</h2>
     <div  className="flex flex-row">
     <div  className="flex flex-col border-r-2 border-blue-500 min-w-fit">
@@ -264,19 +254,21 @@ return(
     <form className="flex flex-col flex-wrap gap-5 my-3">
       <div  className="flex flex-col">
         <DatePicker
+        //value={spendingplanDetails.planmonthyear.toString()}
         value={spendingplanDetails.planmonthyear.toString()}
           className="ml-0"
             dateFormat="MMMM yyyy"
             showMonthYearPicker 
             selected={planmonthyear} 
-            onChange={(date) => date && setPlanmonthyear(date)}
+            onChange={(date) => date && setPlanmonthyear(planmonthyear)}
             />
           {spendingplanDetails.mycategories?.length > -1 ? (spendingplanDetails.mycategories.map((mycategory,index) => 
           
           
-          <div key={index} className="mycategoryArr flex flex-row m-0 p-0"> 
+          <div key={index} className="mycategoryArr"> 
           
             <input onChange={(e) => setMycategoryId(e.target.value)}
+            //value={mycategory.mycategoryId}
             value={mycategory.mycategoryId}
             id={mycategory.mycategoryId}
             className="px-2 py-2 m-0 border border-green-200 max-w-2xl text-charcoal-500 w-[250px]"
@@ -284,10 +276,9 @@ return(
             placeholder={mycategory.mycategoryId}
             type="text"
             />
-         <h2>{mycategoryId}</h2>
             <input 
             onChange={(e) => setCategorynotes(e.target.value)}
-            value={mycategory?.categoryNotes}
+            value={mycategory?.categorynotes}
             className="px-4 py-2 m-0 border border-green-200 text-charcoal-500 w-[350px]"
             name="category-notes"
             placeholder="Category Notes (for ex Mortgage: could be Chase"
@@ -296,13 +287,14 @@ return(
             {/*<h2>{categorynotes}</h2>*/}
             <input onChange={(e) => setPlanamount(e.target.value)}
             className="px-4 py-2 m-0 border border-green-200 text-charcoal-500 w-[100px]"
-            value={mycategory.planamount}
+            //value={parseFloat(mycategory?.planamount)}
+            //value={parseFloat(mycategory?.planamount).toFixed(2)}
+            value={mycategory?.planamount}
             name="planamount"
             placeholder="0.00"
             //selected={planamount}
             type="string"
             />
-            <h2>{planamount}</h2>
             <input onChange={(e) => setExplain(e.target.value)}
             value={mycategory?.explain}
             className="px-4 py-2 m-0 border border-green-200 text-charcoal-500 w-[350px]"
@@ -310,6 +302,7 @@ return(
             placeholder="Explain Difference"
             type="text"
             />
+            <hr className="my-4 text-blue-600 bg to-blue-300" />
             {/*<h2>{planamount}</h2>
             on click should set - everything in my
             
@@ -329,5 +322,5 @@ return(
     
     </> )
 }
-export default Edit
+export default EditSpendingPlan
 

@@ -106,9 +106,11 @@ import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
 export const config = {
     matcher:[
     "/spendingplan/:path*",
+    "/spendingplans/:path*",
     "/transaction/:path*",
     "/addCategory", 
-    "/dashboard"
+    "/dashboard",
+    "/testpromises"
     
 ]
 }

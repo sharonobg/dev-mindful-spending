@@ -2,31 +2,20 @@ import Link from 'next/link';
 import {getServerSession} from "next-auth";
 import { URLSearchParams } from "url";
 import {authOptions} from "@/app/api/auth/[...nextauth]/route";
-//import Categories from "@/src/components/Categories";
 import connect from "../libs/database/mongo";
-
-//import SigninForm from "@/src/components/SigninForm";
-//import connect from '../../libs/mongodb'
-//import TransactionsListId from '../../components/TransactionsListId';
-//import SimpleFilters from '../../components/SimpleFilters';
-//import SPWSpendPlanCombo from '../../components/SPWSpendPlanCombo';
-//import SpendingP\lanRunningTot from '../../components/SpendingPlanRunningTot';
-//import connect from "@/libs/database/mongo";
-//global.URLSearchParams = URLSearchParams
-// import Category from "@/src/models/categoryModel";
-// const categories = await Category.find();
-
-
-let searchParams = new URLSearchParams({}).toString();
+import Testpromises from "@/components/Testpromises";
+import {Suspense} from "react";
+import FoodProvider from '@/components/FoodProvider';
+import SpendingPlanListFilter from "@/components/SpendingPlanListFilter";
+//let searchParams = new URLSearchParams({}).toString();
 //export default async function Dashboard({searchParams}:URLSearchParams) {
   export default async function LandingPage(props:any) {
  
   await connect()
   const session = await getServerSession(authOptions);
-  console.log('session',session)
-      //const sessionUser = session?.user?._id;
-  //const sessionUser = session?.user?.email;
-
+  const foodfetch = fetch("http://localhost:3000/api/testpromises",{ cache:"no-cache"})
+ .then((res) => res.json());
+  
   return (
     <>
    
@@ -36,7 +25,15 @@ let searchParams = new URLSearchParams({}).toString();
     (
       <>
       <h1>Logged in as :{session?.user?.email}</h1>
-   
+      <div>
+        <h1>Hello from Server</h1>
+        <FoodProvider foodPromise={foodfetch}>
+        <Suspense fallback={<div>Loading...</div>}>
+            <Testpromises />
+            <SpendingPlanListFilter />
+        </Suspense>
+        </FoodProvider>
+    </div>
       {/*<h1>Month:{filtermonth}/{filteryear}     Category: {filtercategory ? filtercategory : "All-Categories"}</h1>
       <SimpleFilters />
       <SPWSpendPlanCombo fyear={filteryear} fmonth={filtermonth} category={filtercategory} />

@@ -53,7 +53,7 @@ interface UserData {
   }
 interface Category {
    _id:string;
-   title?:string
+   title:string
   }
 interface CategoriesArr {
   [categories?: CategoryList[]]
@@ -77,8 +77,51 @@ interface myCategoriesData {
   planamount:number,
   mycategoryId:string,
 }
-
-interface CategoriesType {categories:string[];}
+interface MyCategory{
+  mycategoryId:string,
+  isChecked:boolean,
+  planamount:string,
+  categorynotes:string,
+}
+// type AccountType = "debit" | "cash" | "bank_account" | "other";
+enum Accounttype{
+    debit = "debit",
+    cash =  "cash",
+    bankaccount= "bank_account",
+    other = "other",
+ }
+interface Transaction{
+  descr:string,
+  amount:string,
+  categoryId:string,
+  acctype:Accounttype
+}
+ type TransactionType={
+    _id:string,
+    //title?:string,
+    transdate:Date,
+    categoryId:string,
+    descr?:string,
+    acctype:Accounttype,
+    amount:string,
+}
+type MyCategoriesType={
+  mycategoryId:string,
+  isChecked:boolean,
+  explain:string,
+  categorynotes:string,
+  planamount:string,
+}
+type SpendingplanType={
+  //authorId:'string',
+  planmonthyear:Date,
+  mycategories:[MyCategoriesType],
+  // incometype?:string,
+  // incomedate?:Date,
+  // incomedescr?:string,
+  // incomeamount?:number,
+}
+// interface CategoriesType {categories:string[];}
 interface SelectedData {
     amount: string,
     transactionuser:string,

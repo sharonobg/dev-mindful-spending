@@ -4,6 +4,9 @@ import {getServerSession} from "next-auth"
 import {authOptions} from "@/app/api/auth/[...nextauth]/route"
 import User from "@/models/userModel";
 import Spendingplan from "@/models/spendingplanModel";
+import Link from "next/link";
+import { BsFillPencilFill } from 'react-icons/bs'
+
 //monthly spending plan
 export default async function SPCategoryView(props:any) {
     //const transactiontotals = await getTotals();
@@ -19,12 +22,10 @@ export default async function SPCategoryView(props:any) {
     const user = await User.findOne({email:sessionUser});
     const userid = user._id
     const propsfield = {props};
-    //console.log('spendingplan combo propsfield',propsfield);
+    console.log('spendingplan combo propsfield',propsfield);
     const spendingplanloc = await Spendingplan.aggregate([
 
-          {
-
-            "$match": { $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } }
+          {$match: { $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } }
            },
            {
             $addFields: {
@@ -59,6 +60,7 @@ export default async function SPCategoryView(props:any) {
         
            {
             $project: {
+              _id:1,
               //propsArrayCategory:"$propsArrayCategory",
               propsArrayYear: {$toInt: "$propsArrayYear"},
               propsArrayMonth: {$toInt: "$propsArrayMonth"},
@@ -154,6 +156,7 @@ export default async function SPCategoryView(props:any) {
          
           {
             $project: {
+              
               planyear: 1,
               planmonth: 1,
               propsArrayYear:1,
@@ -231,59 +234,38 @@ export default async function SPCategoryView(props:any) {
               cattotal: { $sum: "$planamount" },
             },
           },
-      //     {
-      //       "$group" : {
-      //           _id:
-      //           {
-      //             // planyear: "$planyear",
-      //             // planmonth: "$planmonth",
-      //             // planamount:"$planamount",
-      //             // propsArrayYear:"$propsArrayYear",
-      //             // propsArrayMonth:"$propsArrayMonth",
-      //             mycategories: "$mycategories",
-      //             // propsArray:"$propsArray",
-      //             //categoryplanamount:"$mycategories.planamount",
-      //             // cattotal: "$cattotal",
-      //           },
-      //           newplantotal:{$sum: "$cattotal"},
-      //           //"totalplanamount": {$sum: "$sumcatotal"}
-      //         }
-             
-      // },
 
       ])
       //console.log("spendingplanloc: ",spendingplanloc)
       
     return(
       <>
-     {/*<pre>SPW GET spendingplanloc:{JSON.stringify(spendingplanloc, null, 2)}</pre>
-       <pre>SPW GET transactionstotalspw:{JSON.stringify(transactionstotalspw, null, 2)}</pre>
+    {/*<pre>SPW GET spendingplanloc:{JSON.stringify(spendingplanloc, null, 2)}</pre>
+        <pre>SPW GET transactionstotalspw:{JSON.stringify(transactionstotalspw, null, 2)}</pre>
           <pre>GET props:{JSON.stringify(props, null, 2)}</pre>*/}
        <div className="my-5 flex flex-col place-items-center">
        <h1>Monthly Spending Plan: {props.fmonth}/{props.fyear}<br /></h1>
        </div>
        <div className="justify-center">
-        <div className="spreadsheetCont">
-        <div className="sheet font-bold col-4 w-full">
-
-            <div className="w-full">Category Notes</div>
-            
-            <div className="w-full">Planned Amount</div>
-            <div className="w-full">Explain</div>
+          <div className="spreadsheetCont">
+            <div className="sheet font-bold col-5 w-full">
+              <div className="w-full p-2">Category</div>
+              <div className="w-full p-2">Category Notes</div>
+              <div className="w-full p-2">Planned Amount</div>
+              <div className="w-full p-2">Explain</div>
+              <div className="w-full p-2">Edit/Delete</div>
             </div>
              {/* <h1>Plan Date: {spendingplanloc.planmonth}/{spendingplanloc.planyear}</h1>  */}
-          {/* <pre>{JSON.stringify(spendingplanloc,null,2)}</pre> */}
       {spendingplanloc?.length > -1 ? (spendingplanloc.map((spending:any,index:number) =>
        <>
-        {/* <div key={index} className="spkey"> */}
-        <div className="sheet flex flex-row col-4 w-full" key={spending.mycategories._id}>
-          {/* ID:{spending.mycategories._id} */}
+        <div className="sheet flex flex-row col-5 w-full" key={index}>
           <div className="border border-amber-500 w-full p-2 font-bold">{spending.mycategories?.title}</div>
             <div className="border border-amber-500 w-full p-2 ">{spending.mycategories?.categorynotes}</div>
            
             {/*<div className="border border-amber-5w-fullpx] p-2 ">{spending.planmonth}/{spending.planyear}</div>*/}
             <div className="border border-amber-500 w-full p-2 ">{parseFloat(spending.planamount).toFixed(2)}</div>
             <div className="border border-amber-500 w-full p-2 ">{spending.mycategories?.explain}</div>
+            <div className="editCol border border-amber-500 w-full p-2 "><Link href={`/spendingplans/${spending?._id}`}><BsFillPencilFill /></Link></div>
             {/*<div className="border border-amber-500 w-[200px] p-2">{spending.mycategories?._id}</div>*/}
          </div>
         {/* </div>     */}
@@ -291,7 +273,7 @@ export default async function SPCategoryView(props:any) {
         </>)):("cant find plan")
         }
 
-
+{/*<pre>transactionstotalspw:{JSON.stringify(transactionstotalspw,null,2)}</pre>*/}
       {transactionstotalspw?.length > -1 ? (transactionstotalspw.map((sptotal) =>
            <div key={sptotal._id} className="w-[800px] justify-around flex p-2 border-2 border-amber-500 font-bold">
               <div>Plan Total:</div>

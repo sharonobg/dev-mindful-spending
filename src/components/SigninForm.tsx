@@ -45,7 +45,7 @@ export default function AuthForm({session}:Props){
                 onChange={(e) => setEmail(e.target.value)}
             />
             <button type="submit"
-                disabled={loading}>{loading ? "Please wait" : "Send a link to my email"}</button>
+                aria-disabled={loading}>{loading ? "Please wait" : "Send a link to my email"}</button>
                 { session && 
                 <>
             

@@ -17,7 +17,7 @@ export async function PlanDetails(formData:any) {
     const sessionUser = session?.user?.email;
     const user = await User.findOne({email:sessionUser});
     const userid = user._id
-    const categories = await Spendingplan.find({authorId:userid});
+    const categories = await Spendingplan.find({authorId:userid}).lean();
     //import CreateSpendingPlan from "@/components/CreateSpendingPlan";
     //revalidatePath('/')
     //disconnect();

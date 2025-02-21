@@ -84,7 +84,7 @@ export default function SpendingPlanFilter() {
     const clearFilter = (e:React.FormEvent<HTMLElement>) => {
       e.preventDefault();
      //console.log('filter params', params)
-     router.push(`/dashboard?fyear=${queryYear ? queryYear : getYear }&fmonth=${queryMonth ? queryMonth : getMonth+1 }&category=all-categories`)
+     router.push(`/dashboard?fyear=${queryYear ? queryYear : getYear }&fmonth=${queryMonth ? queryMonth : getMonth+1 }`)
 
     }
     const categoryFilter = (e:React.FormEvent<HTMLElement>) => {
@@ -100,7 +100,7 @@ export default function SpendingPlanFilter() {
       //console.log('params props newYear filter: ',newYear)
       //console.log('params props category filter: ',categoryTitle)
       //console.log('params props dates filter: ',datesfilterVal)
-      router.push(`/dashboard?fyear=${queryYear ? queryYear : getYear }&fmonth=${queryMonth ? queryMonth : getMonth+1 }&category=${categoryT}`)
+      router.push(`/dashboard?fyear=${queryYear ? queryYear : getYear }&fmonth=${queryMonth ? queryMonth : getMonth+1 }`)
 
       //console.log('categories: ',categories)
   // if fmonth = the transaction month = show results = else hide results
@@ -118,7 +118,7 @@ export default function SpendingPlanFilter() {
         //console.log('params props newYear filter: ',newYear)
         //console.log('params props category filter: ',categoryTitle)
         //console.log('params props dates filter: ',datesfilterVal)
-        router.push(`/spending_plan?fyear=${newYear ? newYear: queryYear}&fmonth=${newMonth ? newMonth : queryMonth}&category=${queryCategory ? queryCategory : "all-categories"}`)
+        router.push(`/spendingplan?fyear=${newYear ? newYear: queryYear}&fmonth=${newMonth ? newMonth : queryMonth}`)
 
         //console.log('categories: ',categories)
     // if fmonth = the transaction month = show results = else hide results

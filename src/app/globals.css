@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 @layer base{
-  body{@apply overflow-x-hidden w-full}
+  html{
+    @apply text-blue-600 
+  }
+  body{
+    @apply overflow-x-hidden w-full focus:outline-none active:outline-none }
   /* body{
     
     background:linear-gradient(45deg, white ,white,blue 20%, white 10%,white);
@@ -10,14 +14,18 @@
   } */
   form{@apply flex flex-row flex-wrap gap-5 my-3 self-center}
   button{@apply w-fit bg-blue-400 rounded-md p-3 text-white font-semibold ml-0}
-  input,button{margin: 5px;}
   button { @apply flex px-4 py-2 rounded-lg hover:opacity-80 }
+  input,button{margin: 5px;}
+  
  button.self-start[type='submit']{@apply bg-blue-400 rounded-md py-2 px-3 text-white font-semibold}
  button[type="submit"]{@apply justify-center}
  form input, form select {
-  @apply px-4 py-2 mt-4 mx-5 border border-gray-300 text-gray-500 no-underline p-4
+  @apply px-4 py-2 mt-4 mx-5 border border-gray-300 text-gray-500 no-underline p-4 focus:outline-none active:outline-none focus:border-transparent
 
 }
+form input:hover, form select:hover,input:hover, select:hover,textarea:hover,
+form input:focus, form select:focus,input:focus, select:focus,textarea:focus,
+form input:active, form select:active,input:active, select:active,textarea:active{@apply outline-none border-none}
 
   input, select,textarea {
     @apply px-3 py-3 rounded-md my-3 bg-slate-50 hover:bg-slate-200
@@ -48,7 +56,8 @@ nav a {
     border-color: #ffbf00; 
   }
 }
-
+select.but{@apply border-blue-600 text-blue-600 border-2}
+.mycategoryArr{@apply flex gap-3 mb-5 flex-col}
 .hamburger-menu{@apply flex flex-col md:flex-row gap-5 }
 /* .hamburger.open{left:0;transition: 1s;} */
 .dashboardDiv{@apply place-items-center flex flex-col w-full}
