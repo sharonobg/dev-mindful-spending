@@ -1,6 +1,6 @@
 "use client"
 
-import React,{useState,useEffect} from 'react';
+import React,{useState} from 'react';
 import {useRouter,useSearchParams,useParams} from 'next/navigation';
 import {ToastContainer ,toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -39,39 +39,7 @@ export default function SimpleFilterTransaction() {
     console.log('queryYear filter: ',queryYear)
     const params = searchParams ? searchParams : undefined;
     console.log('params useParams filter: ', params)
-//props available through transactions so these should determine if the transaction would show if a date selected
-    // "propsArrayYear": 2025,
-    // "propsArrayMonth": 1,
-    // "transactionmonth": 1,
-    // "transactionyear": 2025
-
-
-   // console.log('prop search filter:',search)
-    //list of options with current year, all months up to and including the current month.
-    //create api endpoint to retrieve all transactions OR use the api/transaction already there 
-    //get months with transaction transaction month/years in array by lookup then export only the month/date as array
-    //set array into dropdown as options (see categories dropdown)
-    //route push year and month to params for month selected
-    //do same for Categories in params
-
-//console.log('path',router.pathname);
-    
-
-
-    //const filtersearch = new URLSearchParams({searchParams});
-    //const filteryear = searchParams.fyear ? searchParams.fyear : "not there";
-    //console.log('filtersearch',{searchParams})
-        // useEffect(() => {
-        //     fetch('/api/filter')
-        //     .then((res) => res.json())
-        //       .then((filters) => {
-        //         //console.log('filters: ',filters)
-        //         setFilters(filters)
-        //       })
-        //     /* jshint ignore:start*/
-        //     },[])
-
-            //tanstack:
+           
 
             const {data:filters} = useQuery<any>({
               queryKey:['filters'],
@@ -79,18 +47,6 @@ export default function SimpleFilterTransaction() {
                 fetch('http://localhost:3000/api/filter').then((res) => res.json())
               
             })
-            //console.log('query filters',filters)
-            /* jshint ignore:end*/
-          // useEffect(() => {
-          //   fetch('/api/category')
-          //     .then((res) => res.json())
-          //     .then(({categories}) => {
-          //       setCategories(categories)
-          //       //console.log('categories: ',categories)
-          //     })
-          //     /* jshint ignore:start*/
-          // }, [])
-          /* jshint ignore:end*/
     const clearFilter = (e:React.FormEvent<HTMLElement>) => {
       e.preventDefault();
      //console.log('filter params', params)
@@ -122,27 +78,9 @@ export default function SimpleFilterTransaction() {
         const datesfilterVal = datesfilter ? datesfilter : fmonth;
         let newYear = datesfilterVal.slice(datesfilterVal.length - 4); 
         let newMonth = datesfilterVal.slice(0, - 4); 
-        //let categoryT = categoryTitle.toLowerCase();
-        //console.log('datesfilterVal filter: ',datesfilterVal)
-        //console.log('params props newMonth filter: ',newMonth)
-        //console.log('params props newYear filter: ',newYear)
-        //console.log('params props category filter: ',categoryTitle)
-        //console.log('params props dates filter: ',datesfilterVal)
         router.push(`/dashboard?fyear=${newYear ? newYear: queryYear}&fmonth=${newMonth ? newMonth : queryMonth}`)
-
-        //console.log('categories: ',categories)
-    // if fmonth = the transaction month = show results = else hide results
-    //console.log('filters - filter month: ',fmonth)
-    //router.refresh() 
     }
-    //console.log('filter month: ',fmonth)
-    //console.log('new date: ',newD)
-
-    //const FilterProvider = ({ children, fmonth }) => (
-    //    <FilterProvider fmonth={fmonth}>
-    //        {children}
-    //    </FilterProvider>
-    //)
+    
     return(
         <>
         <div className="outerDiv">

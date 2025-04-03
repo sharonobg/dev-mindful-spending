@@ -6,7 +6,7 @@ import {useRouter} from 'next/navigation'
 import {ToastContainer ,toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Edit = ({ params}: { params:{slug: string }}) => {
+const Edit = ({ params}: { params:{id: string }}) => {
     const [title,setTitle] = useState("");
     const {data:session,status} = useSession();
     const router = useRouter();
@@ -14,7 +14,7 @@ const Edit = ({ params}: { params:{slug: string }}) => {
 useEffect(() => {
     async function fetchCategory(){
         const id = {params};
-        const res = await fetch(`/api/category/${id}`);
+        const res = await fetch(`/api/category/${params.id}`);
         const category = await res.json();
         setTitle(category.title);
     }
@@ -38,8 +38,10 @@ const handleSubmit= async (e:React.FormEvent<HTMLFormElement>) => {
     }
     try{
         const id = {params};
+        console.log('id',id)
         const body = {title}
-        const res = await fetch(`/api/category/${id}`,{
+        console.log('body',body)
+        const res = await fetch(`/api/category/${params.id}`,{
         headers: {
             "Content-Type": 'application/json',
             "Authorization": `Bearer ${session?.user?.accessToken}`
@@ -54,12 +56,11 @@ const handleSubmit= async (e:React.FormEvent<HTMLFormElement>) => {
     }else{
         console.log("Edit failed")
     }
-
     const category = await res.json();
-    //console.log(category);
+    console.log('category in put',category);
     router.push("/dashboard");
     }catch(error){
-        console.log(error)
+        console.log('edit category',error)
     }
 
     

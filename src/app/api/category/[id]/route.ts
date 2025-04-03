@@ -1,23 +1,32 @@
-//import clientPromise from "@/src/libs/database/clientPromise";
-//import verifyToken from '@/src/libs/database/jwt';
-import {NextRequest,NextResponse} from "next/server";
 import Category from "@/models/categoryModel";
 import {getServerSession} from "next-auth"
 import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import {getToken} from "next-auth/jwt"
+import {NextRequest,NextResponse} from "next/server";
+
 //import { Types } from 'mongoose';
 
 
-export async function GET(req:NextRequest,{ params}: { params:{slug: string }}){
-    
+export async function GET(req:NextRequest,{ params}: { params:{id: string }}){
+    //  const secret = process.env.NEXTAUTH_SECRET;
+    //     //const secret = await getEncryptedParameter('/prod/NEXTAUTH_SECRET')
+    //     const token = await getToken({req,secret});
+        const session = await getServerSession(authOptions);
+        //console.log('token',token);
+        // const sessionUser = session?.user?._id;
+        // const user = await User.findOne({email:sessionUser});
+        //const userid = user?._id
+        if(session){
     try{
-    const id = {params};
-    const category = await Category.findById(id).lean();
+    const category = await Category.findById(params.id).lean();
     return new Response(JSON.stringify(category),{status:200})
 } catch (error) {
+    console.log('error from category route id ',error)
     return new Response(JSON.stringify(null),{status:500})
+}}
 }
-}
-export async function PUT(req: NextRequest,{ params}: { params:{slug: string }}){
+
+export async function PUT(req: NextRequest,{ params}: { params:{id: string }}){
     //await connect();
     const session = await getServerSession(authOptions);
     if(!session){
@@ -28,11 +37,11 @@ export async function PUT(req: NextRequest,{ params}: { params:{slug: string }})
         const body = await req.json()
         //console.log('body befor breaks: ',body)
         const category = await Category.findById(id);
-        //console.log(category)
+        console.log('api/cat/route put',category)
         
-        const updatedCategory = await Category.findByIdAndUpdate(id, {$set:{...body} } ,{new: true})
+        const updatedCategory = await Category.findByIdAndUpdate(category, {$set:{...body} } ,{new: true})
     
-        //console.log('updated: ',updatedCategory)
+        console.log('updated/cat/route put: ',updatedCategory)
 
     return new Response(JSON.stringify(updatedCategory),{status: 200})
 
@@ -41,7 +50,7 @@ export async function PUT(req: NextRequest,{ params}: { params:{slug: string }})
     }
 }
 
-export async function DELETE(req:NextRequest,{ params}: { params:{slug: string }}){
+export async function DELETE(req:NextRequest,{ params}: { params:{id: string }}){
     //await connect();
     const session = await getServerSession(authOptions);
     if(!session){

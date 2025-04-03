@@ -2,7 +2,6 @@
 import React, {ChangeEvent} from 'react'
 import {useRouter}from 'next/navigation'
 
-
 export default function FindSpendingPlan({spendingplanslist}:{spendingplanslist:any}) {
     const router = useRouter();
         //const [plan,setPlan]= useState("");
@@ -41,9 +40,10 @@ export default function FindSpendingPlan({spendingplanslist}:{spendingplanslist:
     // if {spendingplan.month} and {spendingplan.year} match the current month/year THE ROUTER PUSH TO THE CURRENT PLAN IF NOT - STAY ON THIS PAGE
     return (
         <>
-        
-        <select defaultValue="View your plan" onChange={getPlan} className="m-2">
-       <option defaultValue="View your plan">View other plans</option>
+        <h2>Spending plans list select</h2>
+        {/* <pre>{JSON.stringify(getPlan,null,2)}</pre> */}
+    <select defaultValue="View your plan" onChange={getPlan} className="m-2 font-bold border border-blue-500 rounded-lg">
+       <option defaultValue="View your plan">View existing plans</option>
         {spendingplanslist.map((spendingplan:any) => (
         //    {{spendingplan.month}  = thisMonth ?
        
@@ -52,6 +52,7 @@ export default function FindSpendingPlan({spendingplanslist}:{spendingplanslist:
     )
         }
          </select>
+         <h2>ENDSpending plans list select</h2>
           </>
     );
   }

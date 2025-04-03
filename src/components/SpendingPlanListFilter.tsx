@@ -2,10 +2,9 @@
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/route";
 import Filters from '@/components/Filters';
-//import Link from 'next/link';
 import Spendingplan from '@/models/spendingplanModel';
 import User from '@/models/userModel';
-import RQCategoriesProvider from "@/query_components/RQCategoriesProvider";
+// import RQCategoriesProvider from "@/query_components/RQCategoriesProvider";
 import Category from "@/models/categoryModel";
 
 export default async function SpendingPlanListFilter() {
@@ -37,9 +36,9 @@ export default async function SpendingPlanListFilter() {
     return(
         <>
          
-        <RQCategoriesProvider categoriesPromise={categories}>
+        {/* <RQCategoriesProvider categoriesPromise={categories}> */}
         <Filters />
-        </RQCategoriesProvider>
+        {/* </RQCategoriesProvider> */}
         </>
     )
 }

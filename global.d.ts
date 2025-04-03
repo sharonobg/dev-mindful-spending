@@ -52,6 +52,7 @@ interface UserData {
     email:string;
   }
 interface Category {
+   
    _id:string;
    title:string
   }
@@ -83,7 +84,8 @@ interface MyCategory{
   planamount:string,
   categorynotes:string,
 }
-// type AccountType = "debit" | "cash" | "bank_account" | "other";
+
+type AccountType = "debit" | "cash" | "bank_account" | "other";
 enum Accounttype{
     debit = "debit",
     cash =  "cash",
@@ -94,32 +96,61 @@ interface Transaction{
   descr:string,
   amount:string,
   categoryId:string,
-  acctype:Accounttype
+  acctype:Accounttype.debit
 }
  type TransactionType={
     _id:string,
     //title?:string,
     transdate:Date,
     categoryId:string,
-    descr?:string,
-    acctype:Accounttype,
-    amount:string,
+    descr:string,
+    acctype:AccountType,
+    //amount:string,
+    amount:string
+}
+//after aggregate - categories are in output - so title is available
+type TransactionsAggregate={
+    _id:string,
+    transdate:Date,
+    categoryId:string,
+    descr:string,
+    acctype:AccountType,
+    title:string,
+    amount:decimal,
+    month:number,
+    day:number,
+    year:number
 }
 type MyCategoriesType={
   mycategoryId:string,
   isChecked:boolean,
   explain:string,
   categorynotes:string,
-  planamount:string,
+  planamount:decimal,
 }
 type SpendingplanType={
   //authorId:'string',
+  //_id:string,
+  _id:object,
+  id?:string,
   planmonthyear:Date,
-  mycategories:[MyCategoriesType],
-  // incometype?:string,
-  // incomedate?:Date,
-  // incomedescr?:string,
-  // incomeamount?:number,
+  mycategories:MyCategoriesType[],
+}
+type MyCategoriesTypeAll={
+  mycategoryId:string,
+  isChecked:boolean,
+  explain:string,
+  categorynotes:string,
+  planamount:decimal,
+  title:string
+}
+type SpendingplanTypeAll={
+  _id:any,
+  id?:string,
+  planmonthyear:Date,
+  planmonth:number,
+  planyear:number,
+  mycategories:[MyCategoriesTypeAll],
 }
 // interface CategoriesType {categories:string[];}
 interface SelectedData {

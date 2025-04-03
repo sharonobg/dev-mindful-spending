@@ -15,6 +15,7 @@
     "@tanstack/query-devtools": "^5.65.0",
     "@tanstack/react-query": "^5.66.0",
     "@tanstack/react-query-devtools": "^5.66.3",
+    "@tanstack/react-router": "^1.114.29",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node-fetch": "^2.6.11",
     "@types/react-datepicker": "^6.2.0",
@@ -25,10 +26,12 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^5.9.2",
     "mongoose": "^8.3.0",
+    "n": "^10.1.0",
     "next": "^14.2.5",
     "next-auth": "^4.24.7",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.16",
+    "npm": "^10.9.2",
     "react": "^18.3.1",
     "react-datepicker": "^7.1.0",
     "react-dom": "^18.3.1",
@@ -37,6 +40,7 @@
     "react-icons": "^5.2.1",
     "react-router-dom": "^7.1.5",
     "react-toastify": "^10.0.5",
+    "stable": "^0.1.8",
     "zod": "^3.23.8"
   },
   "devDependencies": {

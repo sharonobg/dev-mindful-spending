@@ -37,10 +37,19 @@ const TransactionSchema = new Schema(
             default:1.00,
             type:mongoose.Schema.Types.Decimal128,
             //get: getAmount
-            required:true
+            required:true,
+            // get: (v: { toString: () => any; } | null) => (v == null) ? v : v.toString()
+            //get: (v: { toString: () => string | number; }) => (+v.toString()).toFixed(2)
+            // set: (v: number) => {
+            //     return new mongoose.Types.Decimal128(v.toFixed(2));
+            //   }
         }
     },
-    {timestamps: true}
+    {//'toJSON': {setters: true},
+        setters:true,
+    timestamps: true
+    },
+   
 );
 
 const Transaction = mongoose.models.Transaction || mongoose.model("Transaction", TransactionSchema);

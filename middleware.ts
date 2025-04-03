@@ -110,7 +110,9 @@ export const config = {
     "/transaction/:path*",
     "/addCategory", 
     "/dashboard",
-    "/testpromises"
+    "/testpromises",
+    "/transactions-page",
+    "/spendingplans-page"
     
 ]
 }

@@ -12,15 +12,14 @@
     background:linear-gradient(45deg, white ,white,blue 20%, white 10%,white);
     height: 100vh;
   } */
-  form{@apply flex flex-row flex-wrap gap-5 my-3 self-center}
-  button{@apply w-fit bg-blue-400 rounded-md p-3 text-white font-semibold ml-0}
-  button { @apply flex px-4 py-2 rounded-lg hover:opacity-80 }
+  form{@apply flex flex-row flex-wrap gap-2 my-2 self-center}
+  
   input,button{margin: 5px;}
   
  button.self-start[type='submit']{@apply bg-blue-400 rounded-md py-2 px-3 text-white font-semibold}
- button[type="submit"]{@apply justify-center}
+ input[type="submit"],button[type="submit"]{@apply justify-center cursor-pointer}
  form input, form select {
-  @apply px-4 py-2 mt-4 mx-5 border border-gray-300 text-gray-500 no-underline p-4 focus:outline-none active:outline-none focus:border-transparent
+  @apply px-4 py-2 mt-1 mx-5 border border-gray-300 text-gray-500 no-underline p-4 focus:outline-none active:outline-none focus:border-transparent
 
 }
 form input:hover, form select:hover,input:hover, select:hover,textarea:hover,
@@ -39,7 +38,8 @@ nav a {
 
   h1 {
     @apply 
-    my-4
+    mt-4
+    mb-6
     text-xl
     text-center
     text-blue-500
@@ -55,6 +55,16 @@ nav a {
   *, ::before, ::after {
     border-color: #ffbf00; 
   }
+
+}
+button{@apply w-fit bg-blue-400 rounded-md p-3 text-white font-semibold ml-0}
+button { @apply flex px-4 py-2 rounded-lg hover:opacity-80 }
+.errorStyle{@apply text-red-600}
+.datepickDiv .react-datepicker{
+  
+}
+.datepickDiv .react-datepicker button {
+  @apply bg-transparent text-sm
 }
 select.but{@apply border-blue-600 text-blue-600 border-2}
 .mycategoryArr{@apply flex gap-3 mb-5 flex-col}
@@ -77,7 +87,6 @@ nav a.active {
   font-bold
 }
 .backgroundDiv{
-  
   background-position: bottom;
   background: linear-gradient(45deg, #fff, #fff, blue 20%, #fff 0, #fff);
   height: 100vh;
@@ -97,6 +106,34 @@ h1.border{@apply border-b-2
 .transactionsList > div{
   @apply  flex flex-row h-auto p-0  my-0
 }
+.layoutGrid > div,.layoutGrid > button {@apply border-collapse border border-amber-500}
+.layout-grid {
+  @apply grid  bg-white break-all md:break-normal md:break-words
+}
+.layout-grid.col-7{
+  @apply grid grid-cols-11 bg-white break-all md:break-normal md:break-words
+}
+.layout-grid.col-5{
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  @apply grid grid-cols-6 bg-white break-all md:break-normal md:break-words 
+}
+.layout-grid > div,
+.layout-grid > button 
+{@apply grid justify-center col-span-1 items-center py-2 px-1 border-collapse border border-amber-500 break-words break-all align-middle}
+.layout-grid  .col2 {@apply col-span-2}
+.layout-grid  .col3 {@apply col-span-3}
+.layout-grid  .colsm {
+  @apply p-0 m-0 }
+.layout-grid  button { 
+  background:none;
+  border-radius:0; 
+  @apply border-collapse border border-amber-500 bg-transparent flex flex-row items-center justify-around ml-[5px] w-[95%] }
+.redbg {@apply bg-transparent}
+button.bluebgborder {@apply bg-none bg-transparent text-blue-500 flex justify-center align-middle underline-offset-1 }
+button.redbg {@apply bg-none bg-transparent text-red-500 flex justify-center align-middle border-r-0}
+button.yellowbg {@apply bg-none bg-transparent text-yellow-500  flex justify-center align-middle border-r-0}
+button.yellowbg svg,button.redbg svg{@apply text-xl md:text-lg}
+.yellowbg {@apply text-yellow-400 bg-none border-r-0}
 .spreadsheetCont {
   @apply mt-5 flex p-0 flex-col  justify-center place-items-center items-center break-words
 }
@@ -104,12 +141,12 @@ h1.border{@apply border-b-2
 .sheet,.spkey{
   @apply bg-white m-0 w-screen flex flex-row h-auto p-0 border border-collapse border-amber-500 break-words justify-center max-w-[800px]
 }
-.spreadsheetCont > div{@apply bg-white}
+.spreadsheetCont,.layoutGrid > div {@apply bg-white}
 .spreadsheetCont >.sheet>div,
 .sheet > div,.spkey > div {
-  /* overflow: auto; */
-  word-wrap: break-word;
-  @apply w-full border-collapse border border-amber-500 content-center justify-center
+  /* overflow: auto; 
+  word-wrap: break-word;*/
+  @apply w-full border-collapse border border-amber-500 content-center justify-center break-all md:break-normal md:break-words
 }
 .editCol > a {@apply flex justify-center}
 

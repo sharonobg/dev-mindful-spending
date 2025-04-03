@@ -22,7 +22,7 @@ export async function GET(request:NextRequest,params:number){
       //console.log('user',user)
       //console.log('userid',userid)
       //console.log('yeardate',yeardate)
-      const transactions= await Transaction.aggregate([
+      const transactions = await Transaction.aggregate([
         { $match: {
             $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } 
         }},
@@ -102,46 +102,6 @@ export async function GET(request:NextRequest,params:number){
     console.log('error transaction GET',error)
       return new Response(JSON.stringify(null), {status:500})
   }
-}
-export async function postTransaction(req: NextRequest){
-  
-  const secret = process.env.NEXTAUTH_SECRET;
-  const session = await getServerSession(authOptions);
-  const token = await getToken({req,secret});
-  const sessionUser = session?.user?._id;
-  //console.log('sessionUser',sessionUser)
-  if(session){
-    try{
-        const session = await getServerSession(authOptions);
-        const sessionUser = session?.user?.email;
-        const user = await User.findOne({email:sessionUser});
-        const userid = user._id;
-        //console.log('session',session)
-        //this is email console.log('sessionUser',sessionUser)
-        //const thisAuthorId = userid;
-        //console.log('authorId',userid);
-        //console.log('sessionUserId',sessionUserId)
-        //console.log('yeardate',yeardate)
-        //console.log('user',user)
-        const body = await req.json();
-        console.log('transaction body fr route',body)
-        const newTransaction = await Transaction.create(
-          {
-            "authorId":token?.sub,
-            "transdate":body.transdate,
-            "descr":body.descr,
-            "acctype":body.acctype,
-            "amount":body.amount,
-            "categoryId":body.categoryId
-            });
-        //console.log('newTransaction fr route',newTransaction)
-        return new Response(JSON.stringify(newTransaction),{status: 201})
-    }catch (error:any){
-      console.log(error)
-      return new Response(JSON.stringify(null),{status:500})
-    }
-  }
-    
 }
 
 

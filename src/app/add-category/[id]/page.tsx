@@ -9,7 +9,7 @@ import { AiFillDelete } from 'react-icons/ai'
 import {HiPencilAlt} from "react-icons/hi";
 
 
-const CategoryDetails = ({ params }: { params: { slug: string } }) => {
+const CategoryDetails = ({ params }: { params: { id: string } }) => {
     const [categoryDetails,setCategoryDetails]=useState<Category>();
 
     const{data: session}= useSession();
@@ -55,7 +55,7 @@ const CategoryDetails = ({ params }: { params: { slug: string } }) => {
         <div className="controls">
                 <div className="flex gap-2 flex-row ">
                     <div className="flex flex-row">
-                        <Link className="flex flex-row gap-1" href={`/add-category/edit/${params}`}>Edit<BsFillPencilFill /></Link>
+                        {/* <Link className="flex flex-row gap-1" href={`/add-category/edit/${params}`}>Edit<BsFillPencilFill /></Link> */}
                     </div>
                     {/*<button onClick={handleDelete} className="flex flex-row gap-1" >Delete<AiFillDelete /></button>*/}
                 </div>

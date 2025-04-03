@@ -37,7 +37,7 @@ const CreateCategory = () => {
             }
             const category = await res.json();
             //router.push(`/add-category/${category?._id}`)
-            router.push(`/spendingplan`)
+            router.push(`/category`)
         }catch (error) {
             throw new Error("Failed to add a category")
         }

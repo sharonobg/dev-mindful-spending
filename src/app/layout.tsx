@@ -1,25 +1,31 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import {getServerSession} from "next-auth";
-import {authOptions} from "../../src/app/api/auth/[...nextauth]/route"
-import Navbar from "../components/Navbar";
-import SessionProvider from "../components/SessionProvider";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route"
+import Navbar from "@/components/Navbar";
+import SessionProvider from "@/components/SessionProvider";
+import PropsProvider from "@/query_components/PropsProvider"
+// import {useCategories} from "@/query_services/queries";
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import RQProvider from "@/query_components/RQProvider";
-// import RQCategoriesProvider from "@/components/RQCategoriesProvider";
-
+// import CategoriesProvider from "@/query_components/CategoriesProvider";
+// // import RQCategoriesProvider from "@/components/RQCategoriesProvider";
+// import CategoriesQueryApi from "@/query_components/CategorieQueryApi";
 export const metadata: Metadata = {
   title: "Mindful Spending App",
   description: "Mindful spending to avoid vagueness",
 };
 
 export default async function RootLayout({
-  
-  children,
+  children
+  //,params
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode,
+  //params:{}
+
 }>) {
+  // const categoriesManyQuery = useCategories();
   const session = await getServerSession(authOptions);
   return (
     <html lang="en">
@@ -31,10 +37,18 @@ export default async function RootLayout({
             <div className="backgroundDiv"></div>
             <main className="mt-8">
               <RQProvider>
+                <PropsProvider>
+              {/* <PropsProvider> */}
+                {/* <CategoriesProvider categoriesPromise={categoriesManyQuery.data}> */}
                 {children}
-                <ReactQueryDevtools initialIsOpen={false} />
+                {/* note: moved devtools to the provider */}
+                
+                {/* </CategoriesProvider> */}
+                {/* </PropsProvider> */}
+                </PropsProvider>
               </RQProvider>
             </main>
+            
         </SessionProvider>
       </body>
     </html>

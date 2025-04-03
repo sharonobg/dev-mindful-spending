@@ -5,25 +5,31 @@ import Link from 'next/link';
 import {getServerSession} from "next-auth";
 import {authOptions} from "../api/auth/[...nextauth]/route";
 import TransactionsListId from '@/components/TransactionsListId';
-
+import {usePropsContext} from "@/query_components/PropsProvider";
 //import IncomeList from '../../components/IncomeList';
 //import IncomeListDates from '../../components/IncomeListDates';
 import Filters from '@/components/Filters';
 
 //import IncomeFilters from '@/src/components/IncomeFilters';
 //import Categories from "@/src/components/Categories";
-import SPWSpendPlanCombo from '@/components/SPWSpendPlanCombo';
+import MonthlySpendingPlan from '@/components/MonthlySpendingPlan';
 import SpendingPlanRunningTot from '@/components/SpendingPlanRunningTot';
-import Testserver from '@/components/Testserver';
+// import Testserver from '@/obsolete/Testserver';
 import Spendingplan from '@/models/spendingplanModel';
 import User from '@/models/userModel';
 import SpendingPlanList from '@/components/SpendingPlanList';
 
-//import IncomeplanList from '@/src/components/IncomeplanList';
+export default async function Dashboard({searchParams,
+}: {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
+  //import IncomeplanList from '@/src/components/IncomeplanList';
 const session = await getServerSession(authOptions);
 const sessionUser = session?.user?.email;
 const user = await User.findOne({email:sessionUser});
 const userid = user?._id
+// console.log('session',session)
 const spendingplanslist = await Spendingplan.aggregate([
   { $match: {
     $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } 
@@ -43,24 +49,14 @@ const spendingplanslist = await Spendingplan.aggregate([
 }
 ] 
 )
-export default async function Dashboard({searchParams,
-}: {
-  params: { id: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}) {
-  const session = await getServerSession(authOptions);
-  //const categories = await Category.find().sort({ title: 1 });
-const getMonth = new Date()
-//const month = getMonth.toLocaleString('default', { month: 'long' });
 const thisMonth = new Date().getMonth()+1;//this is default
 const thisYear = new Date().getFullYear()
+
 //PUT THESE BACK or figure another way for props:
- //const newpropsfield = {params};
  const dbfilteryear = searchParams?.fyear|| searchParams.fyear ===null ? searchParams.fyear : thisYear;
  const dbfiltermonth = searchParams?.fmonth || searchParams.fyear ===null ? searchParams.fmonth : thisMonth; 
- //const filtermonthtotal=searchParams.fmonth? searchParams.fmonth : thisMonth;
  const filtercategory= searchParams?.category? searchParams?.category : "all-categories"
-
+ 
   return (
 
     <>
@@ -71,11 +67,15 @@ const thisYear = new Date().getFullYear()
     (
       <>
       <h1 className="largeTxt">My Spending</h1>
+      
       <Filters />
+      <h2>Add a Category-don't include this</h2>
+    
       <SpendingPlanList spendingplanslist={spendingplanslist}/>
       <TransactionsListId fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
       <SpendingPlanRunningTot fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
-      <SPWSpendPlanCombo fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
+      <MonthlySpendingPlan fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
+    
       {/*<pre><p>Categories available:{JSON.stringify(categories, null, 2)}</p></pre>
     
       <h1 className="largeTxt">Transactions</h1>

@@ -26,10 +26,7 @@ export const POST = async (request:NextRequest) => {
       }
        
         const newUser = new User({name, username,email})
-       
         const savedUser = await newUser.save();
-       //const newUser = new User({name, username,email})
-        //const savedUser = await newUser.save();
         
         return NextResponse.json({
             message: "Email sent to New User for Verification",

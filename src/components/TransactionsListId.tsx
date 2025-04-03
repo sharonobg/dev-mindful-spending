@@ -36,10 +36,10 @@ export default async function TransactionList(props:any) {
     { 
       $addFields: {
         propsArrayYear: {
-          $arrayElemAt: ["$propsArray.v.fyear", 0]
+          $toInt:{$arrayElemAt: ["$propsArray.v.fyear", 0]}
         },
         propsArrayMonth: {
-          $arrayElemAt: ["$propsArray.v.fmonth", 0]
+          $toInt:{$arrayElemAt: ["$propsArray.v.fmonth", 0]}
         },
         propsArrayCategory: {
           $arrayElemAt: [
@@ -60,7 +60,20 @@ export default async function TransactionList(props:any) {
         year_date: {"$year": new Date() } ,
       }
   },
-  
+  {
+    $match: {
+      $expr: {
+        $and: [
+          {
+            $eq: ["$transactionmonth","$propsArrayMonth"]
+          },
+          {
+            $eq: ["$transactionyear", "$propsArrayYear"]
+          }
+        ]
+      }
+    }
+  },
      {
         $lookup: {
           from: "categories",
@@ -120,23 +133,10 @@ export default async function TransactionList(props:any) {
           title: { $toLower : "$category.title" },
           "amount":1,
           month_date:1,
-          sumamount:{$sum:"$amount"},
+          
 
         }},
-        {
-          $match: {
-            $expr: {
-              $and: [
-                {
-                  $eq: ["$transactionmonth","$propsArrayMonth"]
-                },
-                {
-                  $eq: ["$transactionyear", "$propsArrayYear"]
-                }
-              ]
-            }
-          }
-        },
+        
       {
         "$group" : {
             _id:
@@ -156,38 +156,200 @@ export default async function TransactionList(props:any) {
               year : "$year",
               categoryId:"$categoryId",
               title: "$title",
-             amount:"$amount"
+             amount: "$amount"
               //month_date:1
             },
-            transactiontotal:{$sum: "$amount"},
-            
+            amounttotal:{$sum: "$amount"},
           }
          
   },
-//     {
-//       "$project" : {
-//           _id:"$_id",
-        
-//           transactiontotalnew:{$sum: "$transactiontotal"},
-//           //"totalplanamount": {$sum: "$sumcatotal"}
-//         }
+  {
+    $match: {
+      $expr: {
+        $and: [
+          {
+            $eq: ["$transactionmonth","$propsArrayMonth"]
+          },
+          {
+            $eq: ["$transactionyear", "$propsArrayYear"]
+          }
+        ]
+      }
+    }
+  },
+    {
+      "$project" : {
+          _id:"$_id",
+          
+          totalsum: {$sum:"$amounttotal"}
+        }
      
-// },
-  {"$sort": { "transactionday": 1 }}
+  },
+  // {"$sort": { "_id.day": 1 }}
+  {
+    "$sort": {
+      "_id.year": -1,
+      "_id.month":-1,
+      "_id.day":-1
+      //"transdate":1
+    }
+}
 ]);
+const transactionscategories = await Transaction.aggregate([
+  { $match: {
+    $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } 
+}},
+{
+  $addFields: {
+    propsArray: {
+      $objectToArray: propsfield,
+    }
+  }
+},
+{ 
+  $addFields: {
+    propsArrayYear: {
+      $toInt:{$arrayElemAt: ["$propsArray.v.fyear", 0]}
+    },
+    propsArrayMonth: {
+      $toInt:{$arrayElemAt: ["$propsArray.v.fmonth", 0]}
+    },
+    propsArrayCategory: {
+      $arrayElemAt: [
+        "$propsArray.v.category",
+        0
+      ]
+    },
+    transactionday: {
+      $dayOfMonth: "$transdate"
+    },
+    transactionmonth: {
+      $month: "$transdate"
+    },
+    transactionyear: {
+      $year: "$transdate"
+    },
+    month_date: {"$month": new Date() } ,
+    year_date: {"$year": new Date() } ,
+  }
+},
+{
+$match: {
+  $expr: {
+    $and: [
+      {
+        $eq: ["$transactionmonth","$propsArrayMonth"]
+      },
+      {
+        $eq: ["$transactionyear", "$propsArrayYear"]
+      }
+    ]
+  }
+}
+},
+{
+  $lookup: {
+    from: "categories",
+    let: {
+      categoryId: {
+        $toObjectId: "$categoryId"
+      },
+      firstamount: {
+        $sum: "$amount"
+      }
+    },
+    pipeline: [
+      {
+        $match: {
+          $expr: {
+            $eq: ["$_id", "$$categoryId"]
+          }
+        }
+      },
+      {
+        $addFields: {
+          titleLower: {
+            $toLower: "$title"
+          }
+        }
+      },
+      {
+        $project: {
+          //transactionmonth:"$transactionmonth"
+          //,
+          categoryId: 1,
+          title: 1,
+          titleLower: "$titleLower",
+          category: "$category",
+          transdate: 1,
+          descr: 1,
+          plaintitle: "$category.title",
+          amount: 1,
+          firstamount: "$$firstamount"
+        }
+      }
+    ],
+    as: "category"
+  }
+},
+{
+  $unwind: "$category"
+},
+{
+  $project: {
+    //_id: 0,
+    //category:1,
+    categoryTitle: "$category.title",
+    categoryId: "$categoryId",
+    amount: "$amount",
+    transactionmonth: "$transactionmonth",
+    transactionyear: "$transactionyear",
+    propsArrayYear: {
+      $toInt: "$propsArrayYear"
+    },
+    propsArrayMonth: {
+      $toInt: "$propsArrayMonth"
+    }
+  }
+},
+{
+  $group:
+    {
+      _id: {
+        category: "$categoryId",
+        title: "$categoryTitle"
+      },
+      catsum: {
+        $sum: "$amount"
+      }
+    }
+},
 
+{
+  $sort: {
+    "_id.title": 1
+  }
+}
+])
     return (
        <>
-       
-       {/*<pre>GET transactions:{JSON.stringify(transactions, null, 2)}</pre>
-        <pre>GET categories:{JSON.stringify(categories, null, 2)}</pre> */}
-       {/*<div>
-         <div className="spreadsheetCont">
-         {/* propsArrayMonth:"$propsArrayMonth",
-                   propsArrayYear:"$propsArrayMonth",propsArrayMonth:"$propsArrayMonth",
-        propsArrayYear:"$propsArrayMonth", 
-        </div> */}
-        
+       {/* <pre>Transaction Cats: {JSON.stringify(transactionscategories,null,2)}</pre>
+       <pre>GET transactions:{JSON.stringify(transactions, null, 2)}</pre> */}
+       <h2 className="font-bold">Categories View and Totals for {props.fmonth}/{props.fyear}:</h2>
+       <div className="spreadsheetCont">
+        <div className="sheet font-bold flex-col-2">
+            <div className="">Category</div>
+            <div className="">Category Total</div>
+        </div>
+        {transactionscategories?.length > -1 ? (transactionscategories.map( (category) => 
+          <>
+          <div key={category?._id?.category} className="sheet  flex-col-2">
+            <div>{category?._id?.title}</div>
+            <div>{parseFloat(category?.catsum).toFixed(2)}</div>
+          </div>
+        </>
+        )):"data unavailable"}
+        </div>
        <h1>My Transactions List:  {props.fmonth}/{props.fyear}<br /></h1>
        <div className="spreadsheetCont">
        <div className="sheet font-bold flex-col-6">
@@ -208,6 +370,7 @@ export default async function TransactionList(props:any) {
             {/* { transaction.year == `${props.fyear}` && transaction.month == `${props.fmonth}` && transaction.month == `${props.fmonth}` && 
             (`${props.category}` === 'all-categories' ||  transaction.title == `${props.category}`) &&  */}
                     {/* <> */}
+                    
                 <div className="">{transaction?._id.month}/{transaction._id.day}/{transaction._id.year}</div>
                 <div className="">{transaction?._id.title}</div>
                 <div className="">{transaction?._id.descr}</div>
@@ -215,7 +378,7 @@ export default async function TransactionList(props:any) {
                 <div className="">{parseFloat(transaction?._id.amount).toFixed(2)}</div>
                 <div className= "editCol"> 
                   {/* <button onClick={transaction/{transaction._id.id}>nw</button>  */}
-                  <Link href={`/transaction/${transaction?._id.id}`}><BsFillPencilFill /></Link>
+                  <Link href={`/transactions-page/${transaction?._id.id}`}><BsFillPencilFill /></Link>
                  {/*<Link className="flex flex-row gap-1 justify-center" href={`/transaction/${transaction?._id}`}><BsFillPencilFill /></Link>
                   <Link href={`/transaction/`}><BsFillPencilFill />transaction</Link> */}
                 {/* <Link className="flex flex-row gap-1 justify-center" href={`/transaction/${transaction?._id}`}><BsFillPencilFill /></Link>

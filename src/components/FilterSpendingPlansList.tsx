@@ -4,15 +4,6 @@ import {getServerSession} from "next-auth";
 import Spendingplan from "@/models/spendingplanModel";
 import User from "@/models/userModel";
 import {authOptions} from "@/app/api/auth/[...nextauth]/route";
-// import Category from "@/models/categoryModel";
-// import SpendingPlanDetails from "@/components/Spendingplancomp";
-// import SpendingPlanFilter from "@/components/SpendingPlanFilter";
-// import SpendingPlanCreateClient from "@/components/SpendingPlanCreateClient";
-// import SpendingPlanList from "@/components/SpendingPlanList";
-// //import { getToken } from "next-auth/jwt";
-// import {NextRequest} from "next/server";
-// import { ObjectId } from "mongodb";
-// import Dates from "@/components/Dates";
 
 export default async function GetSpendingPlans(){
   const session = await getServerSession(authOptions);
