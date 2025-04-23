@@ -75,9 +75,9 @@ import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
   requestHeaders.set('x-url', request.url);
   const { pathname } = request.nextUrl;
       
-  if (request.nextUrl.pathname.includes('/api')) {
-    return NextResponse.rewrite(new URL('/dashboard', request.url))
-  }
+  // if (request.nextUrl.pathname.includes('/api')) {
+  //   return NextResponse.rewrite(new URL('/dashboard', request.url))
+  // }
   
   Object.entries(corsOptions).forEach(([key, value]) => {
     return response.headers.set(key, value)
@@ -108,11 +108,12 @@ import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
 //export{default} from 'next-auth/middleware'
 export const config = {
     matcher:[
-    "/api/:path*",
+    //"/api/:path*",
     // "/spendingplan/:path*",
     // "/spendingplans/:path*",
     // "/transaction/:path*",
     // "/addCategory", 
+    "login",
     "/dashboard",
     // "/testpromises",
     "/transactions-page",
