@@ -248,15 +248,16 @@ export function useCreateTransactionMutation() {
             return useMutation({
                 mutationFn: (data:SpendingplanType) => updateSpendingplan(data),
                 onSuccess:(data,variables) => {
-                    queryClient.setQueryData(['transaction',{ id: variables._id }], data)
+                    queryClient.setQueryData(['spendingplan',{ id: variables._id }], data),
+                    router.push('/spendingplans-page')
                 },
                 onSettled:async(data,error,variables:any) => {
                     if(error){console.log('updateTransaction',error)}else{
-                        await queryClient.invalidateQueries({queryKey:["transactions"]});
-                        await queryClient.invalidateQueries({queryKey:["transaction",{id:variables._id}]});
+                        await queryClient.invalidateQueries({queryKey:["spendingplans"]});
+                        await queryClient.invalidateQueries({queryKey:["spendingplan",{id:variables._id}]});
                         console.log("settled edit variables",variables);
                     }
-                    router.push('/transactions-page')
+                    
                 }
                 })
             }

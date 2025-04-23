@@ -34,7 +34,7 @@ try{
     return new Response(JSON.stringify(null),{status:500})
   }
 }
-export async function PUT(req:NextRequest,{ params }: { params: { id: string } }){
+export async function PUT(req:NextRequest,{ params }: { params:{id:string } }){
     const accessToken = req.headers.get('authorization')
     if(accessToken){
         const token = accessToken.split(" ")[1]
@@ -47,28 +47,35 @@ export async function PUT(req:NextRequest,{ params }: { params: { id: string } }
 const session = await getServerSession(authOptions);
         const sessionUser = session?.user?.email;
         //const id= {params};
-        const id = {params};
-        //const acctok = session?.user?.accessToken
         const user = await User.findOne({email:sessionUser});
         const userid = user._id;
+        const idn = params.id.toString();
+        var mongoose = require('mongoose');
+        const id = new mongoose.Types.ObjectId(idn);
+        //const acctok = session?.user?.accessToken
+        console.log('api route SP PLAN PUT id',id)
+        
         //console.log('user ln 43',userid)
+
     try{ 
-        const body = await req.json()
+        const data= await req.json()
+        console.log('initial PUT ID sp body',data);
         const spendingplan = await Spendingplan.findById(id).populate("authorId");
-        console.log('id page spendingplan: ',spendingplan)
-        if(spendingplan?.authorId?._id.toString() !== userid){
+        console.log('id PUT route spendingplan: ',spendingplan)
+        console.log('id route spendingplan data: ',data)
+        if(spendingplan?.authorId?._id.toString() !== userid.toString()){
             return new Response(JSON.stringify({message:"Only author can update his spendingplan"}),{status:403})
         }
-        const updatedSpendingplan = await Spendingplan.findByIdAndUpdate(id, {$set:{...body} } ,{new: true})
-        console.log('updatedSpendingplan',updatedSpendingplan)
+        const updatedSpendingplan = await Spendingplan.findByIdAndUpdate(id, {$set:{...data} } ,{new: true})
+        console.log('updatedSpendingplan PUT',updatedSpendingplan)
     return new Response(JSON.stringify(updatedSpendingplan),{status: 200})
 
-
+   
     } catch(error) {
-        console.log('error api Spendingplan: ',error)
+        console.log('error api PUT Spendingplan: ',error)
         return new Response(JSON.stringify(null),{status:500})
-        
-    }
+    } 
+    
 }
 export async function PATCH(req:NextRequest,{ params }: { params: { id: string } }){
     const accessToken = req.headers.get('authorization')

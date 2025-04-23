@@ -1,21 +1,20 @@
 "use client"
 
 import { useTransactionsCreate, useUpdateTransactionMutation,useUpdateSpendingplanMutation, useDeleteSpendingplan } from "@/query_services/mutations";
-import { useCategories, useSpendingplanByIdRet, useSpendingplansAggr } from "@/query_services/queries";
-import { getTransactions, getTransactionsById,getSpendingplanById, getSpendingplanByIdsim, getSpendingplansById, getSpendingplanByIdRet,getCategories } from "@/query_services/services";
-import {useIsFetching, useQueries, useQuery, useSuspenseQuery,QueryClient}from "@tanstack/react-query"
+import { useCategories, useSpendingplansAggr } from "@/query_services/queries";
+import { getTransactions, getTransactionsById,getSpendingplanById, getSpendingplanByIdsim, getSpendingplansById } from "@/query_services/services";
+import {useIsFetching, useQueries, useQuery, useSuspenseQuery}from "@tanstack/react-query"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {z} from 'zod';
 import { Controller, SubmitHandler, useFieldArray, useForm,useFormState } from "react-hook-form";
 import { usePropsContext } from "./PropsProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 // import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { BsFillPencilFill } from "react-icons/bs";
 import { AiFillDelete } from "react-icons/ai";
 import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 
 // type MyCategoriesTypeAll={
@@ -35,44 +34,34 @@ import { zodResolver } from "@hookform/resolvers/zod";
 //   mycategories:[MyCategoriesTypeAll],
 // }
 
-const numberDecimalSchema = z.number();
-const myCategories = z.object({
-  mycategoryId:z.string(),
-  title:z.string(),
-  isChecked:z.boolean(),
-  categorynotes:z.string(),
-  explain:z.string(),
-  //planamount:z.string()
-  planamount:z.any()
-})
-export const spendingplanSchema=z.object({
+const spendingplanAggrSchema=z.object({
   id:z.string(),
   planmonthyear:z.date(),
-  mycategories:z.array(myCategories)
+  mycategories:z.array(  z.object({
+    mycategoryId:z.string(),
+    title:z.string(),
+    isChecked:z.boolean(),
+    categorynotes:z.string(),
+    explain:z.string(),
+    planamount:z.coerce.number()
+  })
+)
 })
 
-export type SpendingplanFormSchema = z.infer<typeof spendingplanSchema>;
+export type SpendingplanFormSchema = z.infer<typeof spendingplanAggrSchema>;
 
 const EditSpendingplanById = ({ params, }: { params:{id: string }}
 ) => {
-  const queryClient = new QueryClient()
-  // look ma, no await
-  queryClient.prefetchQuery({
-    queryKey: ['categories'],
-    queryFn: getCategories,
-  })
-  
-  const id = params.id;
-  const _id = params.id;
+  //const id = params.id;
   const router = useRouter();
-  console.log('params_id',_id)
-  console.log('params id',id)
-  const spendingplansDataById = useSpendingplanByIdRet(id);
+  
+  //const spendingplansData = useSpendingplans();
     const howManyFetching = useIsFetching();
     const deleteSpendingplannMutation = useDeleteSpendingplan()
   // type ThisTransaction = z.infer<typeof transactionFormAggrSchema>
 
-   
+    const id = params.id;
+    const _id = params.id;
     //const spendingplanData = useSpendingplanById(id);
     //const _id = params.id;
     // const categoriesManyQuery = useCategories();
@@ -84,7 +73,7 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
       error
   } = useQuery({
       queryKey:['spendingplan',{id}],
-      queryFn: () => getSpendingplansById(id),
+      queryFn: () => getSpendingplanById(id),
       retry: 5,
       enabled: !!id,
       //enabled: id !== undefined,
@@ -92,7 +81,7 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
       refetchInterval: 30000
   }) 
  
- console.log('this plan Idim',spendingplan)
+ console.log('this plan',spendingplan)
  console.log('this plan id',`${spendingplan?._id}`)
     // const transactionsData = useTransactions();
     const isFetching = useIsFetching();
@@ -109,28 +98,39 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
   }};
   const spendingplansData = useSpendingplansAggr();
   const categoriesManyQuery = useCategories();
-  //const prefetchCategories = usePrefetchCategories();
   const spendingplannew = spendingplan && spendingplan;
   // console.log('spendingplannew',spendingplannew)
     const thisDay = new Date().getDay();//this is default
     const thisMonth = new Date().getMonth()+1;//this is default
     const thisYear = new Date().getFullYear();
-  //  const defaultValues:SpendingplanFormSchema = {
-  //     planmonthyear: spendingplan && spendingplan?.planmonthyear ? spendingplan?.planmonthyear : new Date(),
-  //     mycategories: spendingplan?.mycategories &&  m {
-  //       mycategoryId: spe;
-  //       title: string;
-  //       isChecked: boolean;
-  //       categorynotes: string;
-  //       explain: string;
-  //       planamount: number;
-  //   }[]}
+   // const planmonth = {spendingplan?.planmonth}
+    // const {
+    //     register,
+    //     handleSubmit,
+    //     control,
+    //     setValue,
+    //     formState:{errors},
+    //     //handleSubmitcontrol,
+    //     // formState: { isSubmitting },,
+    //     watch
+    //   } = useForm<SpendingplanTypeAll>({
+    //       defaultValues: {
+    //         id: spendingplan && spendingplan?.id,
+    //         planmonthyear:spendingplan && spendingplan?.planmonthyear,
+    //         planmonth: spendingplan && spendingplan?.planmonth,
+    //         planyear: spendingplan && spendingplan?.planyear,
+    //         mycategories:spendingplan && spendingplan?.mycategories
+    //     }});
        
+        const monthyrdate = new Date();
+        const monthyr = monthyrdate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long'
+        });
+     
         //const handleDelete = (id:any) => deleteSpendingplannMutation.mutate(id)
         const {
-                reset,
                 register,
-                unregister,
                 getValues,
                 getFieldState,
                 handleSubmit,
@@ -138,45 +138,45 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
                 setValue,
                 formState:{errors,isSubmitting},
                 //handleSubmitcontrol,
-                watch
-              } = useForm<SpendingplanType>( 
-                  { mode:'all',
-                    //resolver: zodResolver(spendingplanSchema),
-                    defaultValues:{
-                      //_id: _id,
-                      planmonthyear:spendingplan && spendingplan?.planmonthyear,
-                      mycategories:spendingplan && spendingplan?.mycategories
+                watch} = useForm<SpendingplanType>( {
+                  mode:"onChange",
+                  defaultValues:{
+                    _id: _id,
+                    planmonthyear:spendingplan && spendingplan?.planmonthyear,
+                    mycategories:spendingplan && spendingplan?.mycategories
                     },
-                      shouldUnregister: true,
-                  })
-                  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+                    shouldUnregister: true,
+                    })
+          
+    const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
                       control, // control props comes from useForm (optional: if you are using FormProvider)
-                      name: 'mycategories', // unique name for your Field Array
-                      keyName:'mycategoriesId'
+                      name: "mycategories", // unique name for your Field Array
                   });
+    // const {
+    //   fields: mycategories,
+    //   append: appendcategory,
+    //   remove: removecategory
+    // } = useFieldArray({ control, name: "mycategories" });
     const inList = spendingplansData?.data?.map((exists) => 
       new Date(` ${exists?.planyear}-${exists?.planmonth}-01`)
      );
-     const onSubmit = (data:SpendingplanFormSchema) => console.log("edited data", data)
-     const watchMyCategoriesArray = watch("mycategories");
-    //  const controlledFields = fields.map((field, index) => {
-    //   return {
-    //     ...field,
-    //     ...watchMyCategoriesArray[index]
-    //     };
-    //   });
+    // const newdefaultValues={
+    //   planmonthyear:spendingplan?.planmonthyear,
+    //   mycategories:[{
+    //     mycategoryId:"spendingplan?.mycategories?.mycategoryId",
+    //     categorynotes:"spendingplan?.mycategories?.categorynotes",
+    //     explain:"spendingplan?.mycategories?.explain",
+    //     planamount:"spendingplan?.mycategories?.planamount"
+    // }]
+    // }
+ 
+     const onSubmit = (data:SpendingplanType) => console.log("edited data", data)
+     
     // console.log('inLIst',inList) 
-    useEffect(() => {
-      if(spendingplan){
-        reset(spendingplan)
-      }
-    },[reset,spendingplan])
-
-
+    
     if(spendingplan) {
     return (
-        <div key={spendingplan._id} className="flex flex-col place-items-center">
-          <h2>{JSON.stringify(spendingplan,null,2)}</h2>
+        <div className="flex flex-col place-items-center">
              <h2 className="text-2xl font-bold">Edit this Spending Plan</h2>
                
    <form className="flex flex-col place-items-center" id="editform" onSubmit={handleSubmit(handleUpdateSpendingplanSubmit)}>
@@ -204,72 +204,55 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
           )}
           />
         </div>
-    {/* <button
-                 className="bluebgborder p-0 m-0"
-                 type="button"
-                 onClick={() => append(
-                  { 
-                     mycategoryId:'67918ac304905ddfc5d860f6',
-                     isChecked:true,
-                     explain:"explain difference",
-                     categorynotes:"add category notes",
-                     planamount:'0.00',
-                     title:'' 
-                    }
-                    )}
-               ><span>Add a Category</span></button> */}
+    {/* <p>{getFieldState("planmonthyear").isTouched && "touched"}</p> */}
+    {/* {getFieldState("planmonthyear").isDirty &&  */}
+   
       <ul className="flex flex-col border-none p-0 m-0">
         {/* {fields.map((plancategory:MyCategory, index:number) => ( */}
-         {/* {fields.map((field,index:number) => ( */}
-         {fields.map((field,index:number) => (
-
+         {spendingplan && spendingplan?.mycategories?.map((plancategory:MyCategory,index:number) => (
           <>
-            <li key={field.mycategoriesId} className="flex flex-col">
-            <label className="">Category:{`mycategories.${index}.mycategoryId`}</label>
+            <li key={`mycategories.${index}.mycategoryId`} className="flex flex-col">
+            <label className="">Category:{plancategory.mycategoryId +`-${index}`}/{plancategory?.mycategoryId}</label>
             <select
-            // key={`mycategories.${index}.mycategoryId`}
-              defaultValue={`mycategories.${index}.mycategoryId`}
-             
+            key={`mycategories.${index}.mycategoryId`}
+            defaultValue={plancategory?.mycategoryId}
+              //  {...register(`mycategories.${index}.mycategoryId`,{required:"Select a category from the dropdown"})}
               {...register(`mycategories.${index}.mycategoryId` as const,{required:"Select a category from the dropdown"})} >
-                
               {categoriesManyQuery.data?.slice(1).map((category:Category,index:number) =>
                 <>
                 <option 
-                // key={`mycategories.${index}.mycategoryId`}
-                  key={`field.mycategoriesId.${index}.mycategoryId`} 
+                  key ={`mycategories.${index}.category._id.${index}.category._id`} 
                   defaultValue={`mycategories.${index}.mycategoryId`}
-                  value={category?._id}>{category.title}
+                  value={category?._id} 
+                  >{category.title}
                 </option>
                 </> )}
             </select>
-            <p>{errors.mycategories ? errors.mycategories[index]?.mycategoryId?.message : null}</p>
-            {/* <label>Planned Amount:{parseFloat(`mycategories.${index}.planamount`).toFixed(2)}</label> */}
-            <label>Planned Amount:{ `mycategories.${index}.planamount`}</label>
+            <label>Planned Amount:{plancategory?.planamount.$numberDecimal}</label>
             <input 
-              defaultValue={`mycategories.${index}.planamount`}
-              //id={field.planamount}
+            defaultValue={plancategory?.planamount.$numberDecimal}
+              id={plancategory.planamount}
               placeholder="Planned amount"
-              {...register(`mycategories.${index}.planamount.$numberDecimal` as const,{required:"Missing the planned amount"})}
+              {...register(`mycategories.${index}.planamount` as const,{required:"Missing the planned amount"})}
               aria-invalid={errors.id ? "true" : "false"}
                //     {errors.mycategories.planamount && errors.name.type === "required" && <span>This is required</span>}
                      //  {errors.name && errors.name.type === "maxLength" && <span>Max length exceeded</span> }
                />
-               {/* <p>{errors.mycategories ? errors.mycategories[index]?.planamount?.message : null}</p> */}
-               <div key={`date_${field}`} className="errors.message text-red-600">{errors.mycategories?.message}</div>
-               <label>{`mycategories.${index}.categorynotes`}Enter any Category Notes, i.e. for Rent could be "Chase mortgage"</label> 
-                  {/* <input 
-                    defaultValue={plancategory?.categorynotes}
-                    // {...register(`mycategories.${index}.categorynotes` as const)} 
-                  /> */}
-                  <p>{errors.mycategories ? errors.mycategories[index]?.categorynotes?.message : null}</p>
-                  <Controller
+               <p>{errors.mycategories ? errors.mycategories[index]?.planamount?.message : null}</p>
+               <div key={`date_${plancategory}`}className="errors.message"></div>
+               <label>{plancategory.categorynotes}Enter any Category Notes, i.e. for Rent could be "Chase mortgage"</label> 
+                     <input 
+                     defaultValue={plancategory?.categorynotes}
+                     {...register(`mycategories.${index}.categorynotes` as const)} />
+                     <p>{errors.mycategories ? errors.mycategories[index]?.categorynotes?.message : null}</p>
+                     {/* <Controller
                        render={({ field }) => <input {...field} />}
                        name={`mycategories.${index}.categorynotes`}
                        control={control}
-                     />
-                 <label>{`mycategories.${index}.explain`}Explain why/if this is different this month</label>
+                     /> */}
+                 <label>{plancategory.explain}Explain why/if this is different this month</label>
                  <input 
-                   defaultValue={`mycategories.${index}.explain`}
+                   defaultValue={plancategory?.explain}
                    placeholder="Explain any difference"
                   {...register(`mycategories.${index}.explain` as const,{
                        minLength:{
@@ -292,19 +275,21 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
                                    />
                                )}
                                /> */}
-                    <button type="button" onClick={ () => 
-                    console.log('index',(`mycategories.${index}`))}>Console what is unregistered</button>
+                    
                     <button type="button" onClick={ () => 
                     console.log('index',index)}>Console this category</button> 
-                    <button type="button" onClick={ () => {
-                    //unregister(`mycategories.${index}`);
-                    remove(index)
-                    }}>Remove this category
-                    </button> 
+                  <button type="button" onClick={ () => 
+                    remove()}>Remove this category</button> 
+                     <button type="button" onClick={ () => 
+                    remove()}>Console.log('func index',remove(index))</button>
                    </li>
+                 
                    </> ))}
                </ul>
-               
+               <button type="button" onClick={ () => 
+                    remove()}>Console.log('func',remove())</button> 
+               <button type="button" onClick={ () => 
+                    remove()}>Remove All</button> 
                <button
                  className="bluebgborder p-0 m-0"
                  type="button"
@@ -314,13 +299,11 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
                      isChecked:true,
                      explain:"explain difference",
                      categorynotes:"add category notes",
-                     planamount:0.00,
-                     //title:'' 
-                    }
+                     planamount:0.00 }
+                    
                     )}
-
                ><span>Add a Category</span></button>
-               <input type="submit" disabled={isPending} />
+               <input type="submit" />
              </form>
          <h2>Spending Plan Data: {JSON.stringify(spendingplan,null,2)}</h2>
          <h2>ID:
@@ -337,15 +320,15 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
         
         <div className="flex flex-col w-3/4">
              <div className="my-4 font-bold text-lg">
-             key={`header_${spendingplan?._id}`}
+             
                {/* <div>Plan Month: {planmonth}/{spendingplan?.planmonthyear.getFullYear}</div> */}
                 <div className="categoriesRow place-items-center w-full">
-                    <div>{spendingplan && spendingplan?._id}
+                    <div>{spendingplan && spendingplan?._id.toString()}
                       {/* {spendingplan && spendingplan?.planmonthyear.getMonth()}/{spendingplan && spendingplan?.planmonthyear.getFullYear()} */}
                     </div>
-                    {spendingplan && spendingplan?.mycategories?.map((plancategory:MyCategoriesTypeAll)=>(
+                    {spendingplan && spendingplan?.mycategories?.map((plancategory:MyCategoriesType)=>(
                       <div className="grid layout-grid grid-flow-row col-5 w-full" key={plancategory?.mycategoryId}>
-                        <div className="">Checked?:{plancategory?.title}</div>
+                        <div className="">Checked?:{plancategory?.isChecked}</div>
                         {/* <div className="">{plancategory?.title}{spendingplan?._id}</div> */}
                         <div className="">{plancategory?.planamount.$numberDecimal}</div>
                         <div className="col2">{plancategory?.categorynotes}</div>
@@ -367,7 +350,7 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
                     <div key="spendingplans2" className="spreadsheetCont place-items-center">
                       <h2>This Spending Plan</h2>
                     {/* {spendingplan ? (spendingplan?.map((spendingplan:SpendingplanTypeAll)=> */}
-                      <div key={spendingplan?._id} className="flex flex-col w-3/4">
+                      <div key={spendingplan?.id} className="flex flex-col w-3/4">
                           {/* <div key={spendingplan?._id} className="my-4 font-bold text-lg flex flex-row place-items-center justify-around"> */}
                         
                             {/* <span key="edit_delete" className="flex flex-row">
@@ -379,7 +362,7 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
                               </button>
                               </span> */}
                               {/* </div> */}
-                            <div key={spendingplan?._id} className="key categoriesRow place-items-center w-full">
+                            <div key={spendingplan?.id} className="key categoriesRow place-items-center w-full">
                             {spendingplan?.mycategories?.map((plancategory)=>(
                               <div className="grid layout-grid grid-flow-row col-5 w-full" key={plancategory?.mycategoryId}>
                      {/*<div key="1" className="">{plancategory?.title}</div>           {/*  */}

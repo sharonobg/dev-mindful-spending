@@ -10,7 +10,7 @@ import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
       // 'https://www.sharonobrien.com',
       // 'http://www.sharonobrien.com',
       // 'https://sharonobrien.com',
-      'http://localhost:3000/',
+      'http://localhost:3005/',
       // 'http://localhost:3001/',
       // 'https://mindful-spending-22924.vercel.app/',
       // 'https://mindful-spending.vercel.app/',
@@ -41,6 +41,7 @@ import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
                 }
             },
             pages:{
+
                     signIn: "/login",
                     newUser:"/register",
                     verifyRequest: "/verify-request",
@@ -72,10 +73,12 @@ import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
   const response = NextResponse.next();
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-url', request.url);
-  if (isAllowedOrigin) {
-    //response.headers.set('Access-Control-Allow-Origin', origin)
-    return response.headers.set('Access-Control-Allow-Origin', origin)
+  const { pathname } = request.nextUrl;
+      
+  if (request.nextUrl.pathname.includes('/api')) {
+    return NextResponse.rewrite(new URL('/dashboard', request.url))
   }
+  
   Object.entries(corsOptions).forEach(([key, value]) => {
     return response.headers.set(key, value)
   })
@@ -105,14 +108,14 @@ import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
 //export{default} from 'next-auth/middleware'
 export const config = {
     matcher:[
-    "/spendingplan/:path*",
-    "/spendingplans/:path*",
-    "/transaction/:path*",
-    "/addCategory", 
+    "/api/:path*",
+    // "/spendingplan/:path*",
+    // "/spendingplans/:path*",
+    // "/transaction/:path*",
+    // "/addCategory", 
     "/dashboard",
-    "/testpromises",
+    // "/testpromises",
     "/transactions-page",
     "/spendingplans-page"
-    
 ]
 }

@@ -1,9 +1,9 @@
 "use client"
 
-import {useMutation,useQueryClient,useQuery,useQueries} from "@tanstack/react-query";
+import {useMutation,useQuery,useQueries,useQueryClient} from "@tanstack/react-query";
 import {
     // createAuthorCategory, 
-    getCategory,
+    //getCategory,
     getCategories,
     getSpendingplans,
     getTransactions,
@@ -12,7 +12,8 @@ import {
     getTransactionsIds,
     getSpendingplanById,
     getSpendingplansaAggr,
-    getSpendingplanByIdsim
+    getSpendingplanByIdsim,
+    getSpendingplanByIdRet
     ,
     // getSpendingplanByIdAggr
 } from "@/query_services/services";
@@ -26,18 +27,27 @@ export function useCategories(){
    
 }
 
+// export const usePrefetchCategories = async () => {
+//     const queryClient = useQueryClient() 
+//     // The results of this query will be cached like a normal query
+//     await queryClient.prefetchQuery({
+//       queryKey: ['categories'],
+//       queryFn: getCategories,
+//     })
+//   }
 //categories useQueries for multiple queries
-export function useCategoriesMany(ids:(any | undefined[] | undefined)){
-    return useQueries({
-        queries:ids.map((id:any) => {
-            return{
-                queryKey: ["category", {id}],
-                queryFn:() => getCategory({id})
-                
-            }
-        })
-    })
-}
+// export function useCategoriesMany(ids:(any | undefined[] | undefined)){
+//     return useQueries({
+//         queries:ids.map((id:any) => {
+//             return{
+//                 queryKey: ["category", {id}],
+//                 queryFn:() => getCategory({id}),
+//                 cacheTime: Infinity,
+//                 staleTime: Infinity,
+//             }
+//         })
+//     })
+// }
 //new transaction queries
 // export function useTransactionsData(){
 //     return useQuery({
@@ -125,17 +135,20 @@ export function useSpendingplans(){
         queryFn: getSpendingplans
     }) 
 }
-// export function useSpendingplanById(id:any){
-//     return useQuery({
-//           queryKey:['spendingplan',{id}],
-//           queryFn: () => getSpendingplanById(id),
-//           //retry: 5,
-//           enabled: !!id,
-//           //enabled: id !== undefined,
-//           // refetch every second
-//           refetchInterval: 30000
-//       }) 
-// }
+export function useSpendingplanByIdRet(id:any){
+    return useQuery({
+          queryKey:['spendingplan',{id}],
+          queryFn: () => getSpendingplanById(id),
+          
+          //retry: 5,
+          enabled: !!id,
+          //enabled: id !== undefined,
+          // refetch every second
+          refetchInterval: 30000
+      }) 
+
+      
+}
 export function useSpendingplanById(id:any){
     return useQuery({
           queryKey:['spendingplan',{id}],

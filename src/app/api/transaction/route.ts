@@ -110,21 +110,15 @@ export async function POST(req: NextRequest){
   const secret = process.env.NEXTAUTH_SECRET;
   const session = await getServerSession(authOptions);
   const token = await getToken({req,secret});
-  const sessionUser = session?.user?._id;
+  //const sessionUser = session?.user?._id;
   //console.log('sessionUser',sessionUser)
   if(session){
     try{
         const session = await getServerSession(authOptions);
         const sessionUser = session?.user?.email;
         const user = await User.findOne({email:sessionUser});
-        const userid = user._id;
-        //console.log('session',session)
-        //this is email console.log('sessionUser',sessionUser)
-        //const thisAuthorId = userid;
-        //console.log('authorId',userid);
-        //console.log('sessionUserId',sessionUserId)
-        //console.log('yeardate',yeardate)
-        //console.log('user',user)
+        //const userid = user._id;
+      
         const body = await req.json();
         console.log('transaction body fr route',body)
         const newTransaction = await Transaction.create(

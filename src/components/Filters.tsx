@@ -44,7 +44,7 @@ export default function SimpleFilterTransaction() {
             const {data:filters} = useQuery<any>({
               queryKey:['filters'],
               queryFn: () => 
-                fetch('http://localhost:3000/api/filter').then((res) => res.json())
+                fetch('http://localhost:3005/api/filter').then((res) => res.json())
               
             })
     const clearFilter = (e:React.FormEvent<HTMLElement>) => {
@@ -93,7 +93,7 @@ export default function SimpleFilterTransaction() {
           <form onSubmit={dateFilter} className="flex flex-col flex-wrap gap-5 my-3">
             <h2>Choose a Different Month</h2>
             <div className="flex flex-row font-bold place-items-center">
-              <span>Your spending plans:</span><select onChange={(e) => setDatesfilter(e.target.value)} className="m-2">
+              <span>Transactions available:</span><select onChange={(e) => setDatesfilter(e.target.value)} className="m-2">
                 {filters?.length > -1 ? 
                   (filters.map((filter:any,index:number) =>
                   {return(

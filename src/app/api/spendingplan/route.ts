@@ -151,7 +151,7 @@ export async function GET(request:NextRequest,props:any){
 
 export async function POST(req:NextRequest){
   //await connect();
-  const secret = process.env.NEXTAUTH_SECRET;
+  // const secret = process.env.NEXTAUTH_SECRET;
   const session = await getServerSession(authOptions);
   const sessionUser = session?.user?.email;
   const user = await User.findOne({email:sessionUser});

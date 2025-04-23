@@ -25,7 +25,7 @@ export async function GET(req:NextRequest){
         try{
             
             const categories= await Category.find().sort({ title: 1 }).lean();
-            //console.log('categories api',categories)
+            console.log('categories api',categories)
             return NextResponse.json(categories)
         }catch(error){
             console.log("category error", error)

@@ -14,8 +14,7 @@ import SpendingPlanListFilter from "@/components/SpendingPlanListFilter";
  
   //await connect()
   const session = await getServerSession(authOptions);
-//   const foodfetch = fetch("http://localhost:3000/api/testpromises",{ cache:"no-cache"})
-//  .then((res) => res.json());
+
   
   return (
     <>

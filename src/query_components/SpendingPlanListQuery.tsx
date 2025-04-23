@@ -21,7 +21,7 @@ export default function FindSpendingPlan() {
 
     
     //  console.log('inLIst',inList)
-     //react-datepicker__month-0
+     
     //  const filterMonth = (date:Date) => {
     //   return !inList(date)
     //  }
@@ -32,17 +32,17 @@ export default function FindSpendingPlan() {
 
     return (
         <>
-        <h2>Spending Plan list Dropdown</h2>
+         <h2 className="text-2xl font-bold">View/Edit an Existing Spending Plan</h2>
+      
           {/* {JSON.stringify(spendingplansDataNew?.data,null,2)} */}
          {spendingplansDataNew?.data?.map((spendingplansel:SpendingplanTypeAll,index:number) => (
         
-        <div className="flex flex-row justify-around items-center" key={spendingplansel.id}>
+        <div className="flex flex-row justify-around items-center">
         <div className="self-center" key={spendingplansel.id}>
-           {spendingplansel.planmonth}/{spendingplansel.planyear}
+        {spendingplansel.planmonth}/{spendingplansel.planyear}/
               {/* <pre>{JSON.stringify(spendingplansDataNew.data,null,2)}</pre> */}
-        
         </div>
-        <button key="edit" className="yellowbg colsm" onClick={() => router.push(`/spendingplans-page/${spendingplansel?.id}`)}>
+        <button key={`edit_${spendingplansel.id}`} className="yellowbg colsm" onClick={() => router.push(`/spendingplans-page/${spendingplansel?.id}`)}>
                   <div className="sr-only hidden first:md:not-sr-only  md:flex">Edit</div><BsFillPencilFill />
         </button>
        

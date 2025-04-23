@@ -5,6 +5,7 @@ import User from "@/models/userModel";
 import Spendingplan from "@/models/spendingplanModel";
 import Link from "next/link";
 import { BsFillPencilFill } from 'react-icons/bs'
+import Transaction from "@/models/transactionModel";
 
 //monthly spending plan
 export default async function MonthlySpendingPlan(props:any) {
@@ -22,7 +23,7 @@ export default async function MonthlySpendingPlan(props:any) {
     const userid = user._id
     const propsfield = {props};
     console.log('spendingplan combo propsfield',propsfield);
-    const spendingplanloc = await Spendingplan.aggregate([
+    const spendingplanloccats = await Spendingplan.aggregate([
 
           {$match: { $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } }
            },
@@ -162,6 +163,9 @@ export default async function MonthlySpendingPlan(props:any) {
               propsArrayMonth:1,
               mycategories: 1,
               propsArray:1,
+              planfield: {$cond: [{$not: ["$mycategories.mycategoryId"]}, "$categoryId", "$mycategories.mycategoryId"]} ,
+          catfield: {$cond: [{$not: ["$categoryId"]}, "$mycategories.mycategoryId", "$categoryId"]} ,
+          
               planamount:"$mycategories.planamount",
               totalamount:"$amount"
             },
@@ -236,14 +240,163 @@ export default async function MonthlySpendingPlan(props:any) {
 
       ])
       //console.log("spendingplanloc: ",spendingplanloc)
+      const transactionscategories = await Transaction.aggregate([
+        { $match: {
+          $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } 
+      }},
+      {
+        $addFields: {
+          propsArray: {
+            $objectToArray: propsfield,
+          }
+        }
+      },
+      { 
+        $addFields: {
+          propsArrayYear: {
+            $toInt:{$arrayElemAt: ["$propsArray.v.fyear", 0]}
+          },
+          propsArrayMonth: {
+            $toInt:{$arrayElemAt: ["$propsArray.v.fmonth", 0]}
+          },
+          propsArrayCategory: {
+            $arrayElemAt: [
+              "$propsArray.v.category",
+              0
+            ]
+          },
+          transactionday: {
+            $dayOfMonth: "$transdate"
+          },
+          transactionmonth: {
+            $month: "$transdate"
+          },
+          transactionyear: {
+            $year: "$transdate"
+          },
+          month_date: {"$month": new Date() } ,
+          year_date: {"$year": new Date() } ,
+        }
+      },
+      {
+      $match: {
+        $expr: {
+          $and: [
+            {
+              $eq: ["$transactionmonth","$propsArrayMonth"]
+            },
+            {
+              $eq: ["$transactionyear", "$propsArrayYear"]
+            }
+          ]
+        }
+      }
+      },
+      {
+        $lookup: {
+          from: "categories",
+          let: {
+            categoryId: {
+              $toObjectId: "$categoryId"
+            },
+            firstamount: {
+              $sum: "$amount"
+            }
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$categoryId"]
+                }
+              }
+            },
+            {
+              $addFields: {
+                titleLower: {
+                  $toLower: "$title"
+                }
+              }
+            },
+            {
+              $project: {
+                //transactionmonth:"$transactionmonth"
+                //,
+                categoryId: 1,
+                title: 1,
+                titleLower: "$titleLower",
+                category: "$category",
+                transdate: 1,
+                descr: 1,
+                plaintitle: "$category.title",
+                amount: 1,
+                firstamount: "$$firstamount"
+              }
+            }
+          ],
+          as: "category"
+        }
+      },
+      {
+        $unwind: "$category"
+      },
+      // {
+      //   $match: {
+      //     $expr: {
+      //       // $and: [
+      //       // {
+      //       $eq: [
+      //         "$mycategories.mycategoryId",
+      //         "$_id"
+      //       ]
+      //     }
+      //   }
+      // },
+      {
+        $project: {
+          //_id: 0,
+          planfield: {$cond: [{$not: ["$mycategories.mycategoryId"]}, "", "$mycategories.mycategoryId"]} ,
+          catfield: {$cond: [{$not: ["$categoryId"]}, "$mycategories.mycategoryId", "$categoryId"]} ,
+          category:1,
+          categoryTitle: "$category.title",
+          categoryId: "$categoryId",
+          amount: "$amount",
+          transactionmonth: "$transactionmonth",
+          transactionyear: "$transactionyear",
+          propsArrayYear: {
+            $toInt: "$propsArrayYear"
+          },
+          propsArrayMonth: {
+            $toInt: "$propsArrayMonth"
+          }
+        }
+      },
+      {
+        $group:
+          {
+            _id: {
+              category: "$categoryId",
+              title: "$categoryTitle"
+            },
+            catsum: {
+              $sum: "$amount"
+            }
+          }
+      },
       
+      {
+        $sort: {
+          "_id.title": 1
+        }
+      }
+      ])
     return(
       <>
-    {/*<pre>SPW GET spendingplanloc:{JSON.stringify(spendingplanloc, null, 2)}</pre>
-        <pre>SPW GET transactionstotalspw:{JSON.stringify(transactionstotalspw, null, 2)}</pre>
+    <pre>spendingplanloccats:{JSON.stringify(spendingplanloccats, null, 2)}</pre>
+       {/*} <pre>SPW GET transactionstotalspw:{JSON.stringify(transactionstotalspw, null, 2)}</pre>
           <pre>GET props:{JSON.stringify(props, null, 2)}</pre>*/}
        <div className="my-5 flex flex-col place-items-center">
-       <h1>Monthly Spending Plan: {props.fmonth}/{props.fyear}<br /></h1>
+       <h1>Monthly Spending Plan All Cats: {props.fmonth}/{props.fyear}<br /></h1>
        </div>
        <div className="justify-center">
           <div className="spreadsheetCont">
@@ -254,16 +407,19 @@ export default async function MonthlySpendingPlan(props:any) {
               <div className="w-full p-2">Explain</div>
               <div className="w-full p-2">Edit/Delete</div>
             </div>
-             {/* <h1>Plan Date: {spendingplanloc.planmonth}/{spendingplanloc.planyear}</h1>  */}
-      {spendingplanloc?.length > -1 ? (spendingplanloc.map((spending:any,index:number) =>
+             {/* <h1>Plan Date: {spendingplanloccats.planmonth}/{spendingplanloccats.planyear}</h1>  */}
+      {spendingplanloccats?.length > -1 ? (spendingplanloccats.map((spending:any,index:number) =>
        <>
         <div className="sheet flex flex-row col-5 w-full" key={index}>
-          <div className="border border-amber-500 w-full p-2 font-bold">{spending.mycategories?.title}</div>
+          <div className="border border-amber-500 w-full p-2 font-bold">{spending?.catfield}{spending.mycategories?.title}</div>
             <div className="border border-amber-500 w-full p-2 ">{spending.mycategories?.categorynotes}</div>
            
             {/*<div className="border border-amber-5w-fullpx] p-2 ">{spending.planmonth}/{spending.planyear}</div>*/}
             <div className="border border-amber-500 w-full p-2 ">{parseFloat(spending.planamount).toFixed(2)}</div>
-            <div className="border border-amber-500 w-full p-2 ">{spending.mycategories?.explain}</div>
+           
+            <div className="border border-amber-500 w-full p-2 font-bold">
+            plan:{spending?.planfield}cat:{spending?.catfield}
+              </div>
             <div className="editCol border border-amber-500 w-full p-2 "><Link href={`/spendingplans-page/${spending?._id}`}><BsFillPencilFill /></Link></div>
             {/*<div className="border border-amber-500 w-[200px] p-2">{spending.mycategories?._id}</div>*/}
          </div>

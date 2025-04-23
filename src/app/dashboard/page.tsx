@@ -14,10 +14,13 @@ import Filters from '@/components/Filters';
 //import Categories from "@/src/components/Categories";
 import MonthlySpendingPlan from '@/components/MonthlySpendingPlan';
 import SpendingPlanRunningTot from '@/components/SpendingPlanRunningTot';
+//import SpendingPlanRunningTotAllCategories from '@/components/SpendingPlanRunningTotAllCategories';
+
 // import Testserver from '@/obsolete/Testserver';
 import Spendingplan from '@/models/spendingplanModel';
 import User from '@/models/userModel';
 import SpendingPlanList from '@/components/SpendingPlanList';
+//import MonthlySpendingPlanAllCatsT from '@/components/MonthlySpendingPlanAllCatsT';
 
 export default async function Dashboard({searchParams,
 }: {
@@ -72,6 +75,8 @@ const thisYear = new Date().getFullYear()
       <h2>Add a Category-don't include this</h2>
     
       <SpendingPlanList spendingplanslist={spendingplanslist}/>
+      {/* <SpendingPlanRunningTotAllCategories fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} /> */}
+      {/* <MonthlySpendingPlanAllCatsT fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} /> */}
       <TransactionsListId fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
       <SpendingPlanRunningTot fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
       <MonthlySpendingPlan fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />

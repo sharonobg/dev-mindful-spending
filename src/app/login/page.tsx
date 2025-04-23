@@ -9,10 +9,7 @@ export default async function LoginPage() {
 
     return(
         <div className="flex flex-columnm max-w-80">
-        <h2>Signin:</h2><br />
              <SigninForm session={session}/>
-            
-       
         </div>
     )
     

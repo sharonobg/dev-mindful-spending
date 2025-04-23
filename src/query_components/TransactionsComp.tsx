@@ -17,8 +17,9 @@ import { toast } from "react-toastify";
 export default function TransactionsClientPg(){
   const {fyear,fmonth,fcategory} = usePropsContext();
   const router = useRouter();
-  
+  //get categories, get transactions
     const categoriesManyQuery = useCategories();
+    console.log('categoriesManyQuery',categoriesManyQuery)
 //     if(categoriesManyQuery.isPending){
 //      return <span>Waiting for Categories ...</span>
 //  }
@@ -84,6 +85,10 @@ const transactionsAggrMonth = useTransactionsAggrMonth();
     const watchCategory = watch("categoryId");
     const watchAcctype = watch("acctype");
     const handleDelete = (id:any) => deleteTransactionMutation.mutate(id)
+    //     if(categoriesManyQuery.isPending|| getT){
+//      return <span>Waiting for Categories ...</span>
+//  }
+if(howManyFetching > 0){return <span>Waiting ...</span>}
     return (
         <div className="flex flex-col">
         <h2>Transactions Client Page</h2>
@@ -91,10 +96,12 @@ const transactionsAggrMonth = useTransactionsAggrMonth();
         <h2>transactions status: {transactionsData.fetchStatus}</h2>
         <h2>transaction status: {transactionsData.status}</h2>
         <h2>Global isFetching: {howManyFetching}</h2>
+        
         <h2>Create Transaction</h2>
         <h2>Context: {fmonth}/{fyear}/{fcategory}</h2>
         <form className="flex flex-col" onSubmit={handleSubmit(handleCreateTransactionSubmit)}>
-            <label>Choose a Date:</label>
+            <h2>categories:{JSON.stringify(categoriesManyQuery.data,null,2)}
+              </h2><label>Choose a Date:</label>
             <div className="datepickDiv">
                        
                       <Controller

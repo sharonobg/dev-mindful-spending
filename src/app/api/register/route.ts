@@ -7,7 +7,7 @@ export const POST = async (request:NextRequest) => {
         const reqBody = await request.json();
         const {name, username,email} = await reqBody;
         //GOING FORWARD - THIS IS WHERE THE EMAIL WOULD GET SENT OR WHATEVER IN SIGNUP PROCESS
-        const allowedEmailsArr = ['newtest24mindful@proton.me','devSha25AcctEm@proton.me','sharonobarea@gmail.com'];
+        const allowedEmailsArr = ['newtest24mindful@proton.me','devSha25AcctEm@proton.me','sharonobarea@gmail.com','family@sharonobrien.com'];
         
         await connect();
         const isExisting = await User.findOne({email});

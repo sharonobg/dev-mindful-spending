@@ -568,6 +568,7 @@ const comboplans = await Transaction.aggregate([
       <div>
          {/* <pre>Comboplans:{JSON.stringify(comboplans, null, 2)}</pre> */}
       <h1>Planned and Actual Spending Running Totals for: {props.fmonth}/{props.fyear}.<br /> Showing: {props.category}</h1>
+      <h2>If you don't see your Transaction category in this list, you may need to add the category to your Spending Plan</h2>
       <div className="my-5 flex flex-col place-items-center spreadsheetCont">
         <div className="sheet flex flex-row  w-full col-6 bg-white font-bold text-sm">
           <div className="font-bold border border-amber-500 w-full p-2 ">Category</div>

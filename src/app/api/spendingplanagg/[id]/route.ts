@@ -80,6 +80,7 @@ try{
             id:"$_id",
             planmonth: "$planmonth",
             planyear: "$planyear",
+            planmonthyear:"$planmonthyear",
             mycategories: {
               mycategoryId:
                 "$mycategories.mycategoryId",
@@ -88,12 +89,14 @@ try{
                 "$mycategories.categorynotes",
               explain: "$mycategories.explain",
               title: "$newtitle",
+             
               // newtitle: {
               //   $arrayElemAt: ["$result.title", 0]
               // },
               // title: "$result.title",
               category: "$category",
-              planmonthyear: 1
+              
+             
             }
           }
         },
@@ -106,8 +109,10 @@ try{
             {
               _id: {
                 id:"$id",
+                planmonthyear: "$planmonthyear",
                 planmonth: "$planmonth",
-                planyear: "$planyear"
+                planyear: "$planyear",
+                
               },
               mycategories: {
                 $addToSet: "$mycategories"
@@ -118,6 +123,7 @@ try{
           $project: {
             _id:"$_id",
             //id:"$_id.id",
+            planmonthyear:"$planmonthyear",
             planmonth: "$planmonth",
             planyear: "$planyear",
             mycategories:"$mycategories"
@@ -146,7 +152,7 @@ try{
         // }
       ])
 
-      console.log('spendingplan api',spendingplan)
+      // console.log('spendingplan api',spendingplan)
 
     return new Response(JSON.stringify(spendingplan),{status:201})
 } catch (error) {

@@ -11,7 +11,6 @@ export default function ReactQueryProvider({
 
 }) {//put the [ use state]so only 1 intance
     const [queryClient] = useState(()  => new QueryClient({
-
       defaultOptions: {
         queries: {
           
@@ -36,6 +35,7 @@ export default function ReactQueryProvider({
       //       // Perform cleanup tasks after mutation operation
       //     },
       // }
+    
     }}));
         return ( 
         <QueryClientProvider client={queryClient}>

@@ -81,8 +81,9 @@ interface myCategoriesData {
 interface MyCategory{
   mycategoryId:string,
   isChecked:boolean,
-  planamount:string,
+  planamount:decimal,
   categorynotes:string,
+  explain:explain,
 }
 
 type AccountType = "debit" | "cash" | "bank_account" | "other";
@@ -131,10 +132,22 @@ type MyCategoriesType={
 type SpendingplanType={
   //authorId:'string',
   //_id:string,
-  _id:object,
+  _id:string,
   id?:string,
   planmonthyear:Date,
   mycategories:MyCategoriesType[],
+}
+interface SpendingplanFormData{
+  planmonthyear:Date,
+  mycategories:MyCategoriesType[
+    {
+      mycategoryId:string,
+      isChecked:boolean,
+      explain:string,
+      categorynotes:string,
+      planamount:decimal,
+    }
+  ],
 }
 type MyCategoriesTypeAll={
   mycategoryId:string,
