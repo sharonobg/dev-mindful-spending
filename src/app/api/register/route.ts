@@ -7,23 +7,23 @@ export const POST = async (request:NextRequest) => {
         const reqBody = await request.json();
         const {name, username,email} = await reqBody;
         //GOING FORWARD - THIS IS WHERE THE EMAIL WOULD GET SENT OR WHATEVER IN SIGNUP PROCESS
-        const allowedEmailsArr = ['newtest24mindful@proton.me','devSha25AcctEm@proton.me','sharonobarea@gmail.com','family@sharonobrien.com'];
+        // const allowedEmailsArr = ['testingSharonMindful@proton.me','newtest24mindful@proton.me','devSha25AcctEm@proton.me','sharonobarea@gmail.com','family@sharonobrien.com'];
         
         await connect();
-        const isExisting = await User.findOne({email});
-        let isAllowedIn = allowedEmailsArr.includes(reqBody.email);
-        if(isExisting ){
+         const isExisting = await User.findOne({email});
+        // let isAllowedIn = allowedEmailsArr.includes(reqBody.email);
+         if(isExisting ){
             return NextResponse.json(
                 {error: "User already exists"},
                 { status: 400 }
               );
         }
-        if(!isAllowedIn ){
-          return NextResponse.json(
-              {error: "User is not allowed"},
-              { status: 400 }
-            );
-      }
+        // if(!isAllowedIn ){
+          // return NextResponse.json(
+          //     {error: "User is not allowed"},
+          //     { status: 400 }
+          //   );
+      //}
        
         const newUser = new User({name, username,email})
         const savedUser = await newUser.save();

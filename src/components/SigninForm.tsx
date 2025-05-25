@@ -35,7 +35,7 @@ export default function AuthForm({session}:Props){
 
     return (
         <div>
-            <form className="signinform" onSubmit={handleEmailSignin}>
+            <form className="signinform flex flex-col" onSubmit={handleEmailSignin}>
             <label htmlFor="email">Please enter the email you registered with:</label>
             <input 
                 id="email"

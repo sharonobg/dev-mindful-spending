@@ -17,6 +17,8 @@ enum IncomeType{
     interest = "interest",
     childsupport =  "child-support",
     retirementincome ="retirement-income",
+    savings ="from-savings",
+    businessincome ="business-income",
     otherincome =  "other"
  }
 // type PlannedIncomeType = {
@@ -160,6 +162,8 @@ const handleSubmitInc = async (e: React.FormEvent<HTMLFormElement>) => {
                     <option value="interest">Interest Received</option>
                     <option value="child-support">Child Support</option>
                     <option value="retirement-income">Retirement Income</option>
+                    <option value="from-savings">From Savings</option>
+                    <option value="business-income">Business Income</option>
                     <option value="other">Other Income</option>
                   </select>
                   <div className="border-t-4 border-blue-500 pt-5">Expected Income: </div>
@@ -186,6 +190,8 @@ const handleSubmitInc = async (e: React.FormEvent<HTMLFormElement>) => {
                     <option value="interest">Interest Received</option>
                     <option value="child-support">Child Support</option>
                     <option value="retirement-income">Retirement Income</option>
+                    <option value="from-savings">From Savings</option>
+                    <option value="business-income">Business Income</option>
                     <option value="other">Other Income</option>
                   </select>
                   <input 

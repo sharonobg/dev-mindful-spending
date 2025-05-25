@@ -30,7 +30,7 @@ const Register = () => {
         let errors = {usernamemess:"",namemess:"",emailmess:""}; 
         if (!name) { 
             errors.namemess = 'name must have at least 1 uppercase letter, 1 lower case letter and at least 6 characters.'; 
-        } else if (!/(?=.*[a-z])(?=.*[A-Z]).{8,25}/.test(name)) { 
+        } else if (!/(?=.*[A-Z]).{8,25}/.test(name)) { 
             errors.namemess = 'name must have at least 1 uppercase letter, 1 lower case letter and at least 6 characters.'; 
             if(!valid){setErrors(errors)}
         } 
@@ -81,6 +81,7 @@ const Register = () => {
         <>
         
         <div className="flex flex-col  place-items-center">
+            <h2 className="flex flex-col p-4">If you have already registered and verified your email, but land on this page after entering your email to login, it may mean that the email you entered at login is not the email your registered with. Please use the same email everytime you login or you will be creating multiple accounts.</h2>
         <div className="flex flex-col border p-4 border-blue-400 shadow-lg rounded-lg place-items-center">
             <div className="justify-center">
                 <h2 className="text-3xl font-semibold text-blue-400">Register</h2>
@@ -90,8 +91,8 @@ const Register = () => {
                     onChange={(e)=>setName(e.target.value)}
                         className="my-0 p-2 border border-gray-300 rounded-md"
                         type="text"
-                        placeholder='name'
-                        title="Must contain at least one uppercase letter, one lowercase letter and at least 8 characters" 
+                        placeholder='Name'
+                        title="Must contain at least one uppercase letter, one lowercase letter and at least 6 characters" 
                         required
                         pattern="(?=.*[a-z])(?=.*[A-Z]).{6,25}"
                          />
@@ -100,7 +101,7 @@ const Register = () => {
                     onChange={(e)=>setUsername(e.target.value)}
                         className="my-0 p-2 border border-gray-300 rounded-md"
                         type="text"
-                        placeholder='username'
+                        placeholder='Username'
                         title="Must contain at least one uppercase letter, one lowercase letter and at least 6 characters" 
                         required
                         pattern="(?=.*[a-z])(?=.*[A-Z]).{6,25}"
@@ -114,7 +115,7 @@ const Register = () => {
                         required
                         pattern="^(.+)@(.+)$"
                         onChange={(e)=>setEmail(e.target.value)} />
-                        <h2>You will be redirected to the login page complete your registration by verifying your email</h2>
+                        <h2>You will be redirected to the login page to complete your registration by verifying your email</h2>
                         <button className="bg-blue-400 rounded-md p-3 text-white font-semibold" type="submit">Register</button>
                 </form>
                 <button className="text-blue-500 font-bold underline" onClick={() => router.push("/login")}>Already have an account? Login now</button>

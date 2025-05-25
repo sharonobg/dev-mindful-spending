@@ -11,7 +11,7 @@ import {NextRequestWithAuth, withAuth} from "next-auth/middleware";
       // 'http://www.sharonobrien.com',
       // 'https://sharonobrien.com',
       'http://localhost:3005/',
-      // 'http://localhost:3001/',
+       'http://localhost:3001/',
       // 'https://mindful-spending-22924.vercel.app/',
       // 'https://mindful-spending.vercel.app/',
       //'https://mindful-spending.com'

@@ -22,7 +22,7 @@ export default async function MonthlySpendingPlan(props:any) {
     const userid = user._id
     const propsfield = {props};
     console.log('spendingplan combo propsfield',propsfield);
-    const spendingplanloc = await Spendingplan.aggregate([
+    const spendingplanloc:SpendingplanType[] = await Spendingplan.aggregate([
 
           {$match: { $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } }
            },
@@ -101,7 +101,6 @@ export default async function MonthlySpendingPlan(props:any) {
               path: "$mycategories",
             },
           },
-          
           {
             $lookup: {
               from: "categories",
@@ -121,8 +120,6 @@ export default async function MonthlySpendingPlan(props:any) {
                     category: "$_id",
                   },
                 },
-               
-              
                 {
                   $project: {
                     planmonth:"$planmonth",
@@ -155,7 +152,6 @@ export default async function MonthlySpendingPlan(props:any) {
          
           {
             $project: {
-              
               planyear: 1,
               planmonth: 1,
               propsArrayYear:1,
@@ -166,10 +162,7 @@ export default async function MonthlySpendingPlan(props:any) {
               totalamount:"$amount"
             },
           },
-     
-          
           ])
-
 
         const transactionstotalspw = await Spendingplan.aggregate([
             { $match: {
@@ -243,41 +236,47 @@ export default async function MonthlySpendingPlan(props:any) {
         <pre>SPW GET transactionstotalspw:{JSON.stringify(transactionstotalspw, null, 2)}</pre>
           <pre>GET props:{JSON.stringify(props, null, 2)}</pre>*/}
        <div className="my-5 flex flex-col place-items-center">
+       
        <h1>Monthly Spending Plan: {props.fmonth}/{props.fyear}<br /></h1>
+
+       {/*<h2>Edit: {JSON.stringify(spendingplanloc,null,2)}</h2>*/}
+       
        </div>
-       <div className="justify-center">
-          <div className="spreadsheetCont">
-            <div className="sheet font-bold col-5 w-full">
-              <div className="w-full p-2">Category</div>
-              <div className="w-full p-2">Category Notes</div>
-              <div className="w-full p-2">Planned Amount</div>
-              <div className="w-full p-2">Explain</div>
-              <div className="w-full p-2">Edit/Delete</div>
+       <div className="w-full">
+          <div className="w-full">
+            <div className="horizGrid grid-cols-8 w-full font-bold">
+              <div className="col-span-2 p-2">Category</div>
+              <div className="col-span-2 p-2">Category Notes</div>
+              <div className="col-span-2 p-2">Planned Amount</div>
+              <div className="col-span-2 p-2">Explain</div>
+              {/* <div className="w-full p-2">Edit/Delete</div> */}
             </div>
              {/* <h1>Plan Date: {spendingplanloc.planmonth}/{spendingplanloc.planyear}</h1>  */}
-      {spendingplanloc?.length > -1 ? (spendingplanloc.map((spending:any,index:number) =>
+      {spendingplanloc?.length > 0 ? (spendingplanloc.map((spending:any,index:number) =>
+      
        <>
-        <div className="sheet flex flex-row col-5 w-full" key={index}>
-          <div className="border border-amber-500 w-full p-2 font-bold">{spending.mycategories?.title}</div>
-            <div className="border border-amber-500 w-full p-2 ">{spending.mycategories?.categorynotes}</div>
+       
+        <div className="horizGrid grid-cols-8 w-full" key={index}>
+          <div className="col-span-2 font-bold">{spending.mycategories?.title}</div>
+            <div className="col-span-2">{spending.mycategories?.categorynotes}</div>
            
             {/*<div className="border border-amber-5w-fullpx] p-2 ">{spending.planmonth}/{spending.planyear}</div>*/}
-            <div className="border border-amber-500 w-full p-2 ">{parseFloat(spending.planamount).toFixed(2)}</div>
-            <div className="border border-amber-500 w-full p-2 ">{spending.mycategories?.explain}</div>
-            <div className="editCol border border-amber-500 w-full p-2 "><Link href={`/spendingplans-page/${spending?._id}`}><BsFillPencilFill /></Link></div>
+            <div className="col-span-2">{parseFloat(spending.planamount).toFixed(2)}</div>
+            <div className="col-span-2">{spending.mycategories?.explain}</div>
+            {/* <div className="editCol border border-amber-500 w-full p-2 "><Link href={`/spendingplans-page/${spending?._id}`}><BsFillPencilFill /></Link></div> */}
             {/*<div className="border border-amber-500 w-[200px] p-2">{spending.mycategories?._id}</div>*/}
          </div>
         {/* </div>     */}
         
-        </>)):("cant find plan")
+        </>)):<div>There is no plan for this month  <Link className="underline font-extrabold" href="/spendingplans-page">Create a plan for {props.fmonth}/{props.fyear}</Link></div>
         }
 
 {/*<pre>transactionstotalspw:{JSON.stringify(transactionstotalspw,null,2)}</pre>*/}
-      {transactionstotalspw?.length > -1 ? (transactionstotalspw.map((sptotal) =>
-           <div key={sptotal._id} className="w-[800px] justify-around flex p-2 border-2 border-amber-500 font-bold">
-              <div>Plan Total:</div>
-              <div>{parseFloat(sptotal.cattotal).toFixed(2)}</div>
-              
+      {transactionstotalspw?.length > 0 ? (transactionstotalspw.map((sptotal) =>
+           <div key={sptotal._id} className="totals grid-cols-8">
+              <div className="col-span-2">Plan Total:</div>
+              <div className="col-span-2 col-end-7">{parseFloat(sptotal.cattotal).toFixed(2)}</div>
+              <div className="editCol col-span-2"><Link href={`/spendingplans-page/${sptotal?._id}`}><span className="">Edit<BsFillPencilFill /></span></Link></div>
           </div>)):("no totals")} 
     
           </div> 

@@ -90,7 +90,8 @@ const transactionsAggrMonth = useTransactionsAggrMonth();
 //  }
 if(howManyFetching > 0){return <span>Waiting ...</span>}
     return (
-        <div className="flex flex-col">
+      <>
+      <div className="flex flex-col">
         <h2>Transactions Client Page</h2>
         <h2>transactionsAggrMonth status: {transactionsAggrMonth.fetchStatus}</h2>
         <h2>transactions status: {transactionsData.fetchStatus}</h2>
@@ -100,8 +101,9 @@ if(howManyFetching > 0){return <span>Waiting ...</span>}
         <h2>Create Transaction</h2>
         <h2>Context: {fmonth}/{fyear}/{fcategory}</h2>
         <form className="flex flex-col" onSubmit={handleSubmit(handleCreateTransactionSubmit)}>
-            <h2>categories:{JSON.stringify(categoriesManyQuery.data,null,2)}
-              </h2><label>Choose a Date:</label>
+            {/* <h2>categories:{JSON.stringify(categoriesManyQuery.data,null,2)}
+              </h2> */}
+              <label>Choose a Date:</label>
             <div className="datepickDiv">
                        
                       <Controller
@@ -173,64 +175,64 @@ if(howManyFetching > 0){return <span>Waiting ...</span>}
         </form>
 
         <h2>Transactions:</h2>
-        <pre>GET transactionsData:{JSON.stringify(transactionsData?.data, null, 2)}</pre>
+        {/* <pre>GET transactionsData:{JSON.stringify(transactionsData?.data, null, 2)}</pre>
         <pre>GET transactionsAggrMonth:{JSON.stringify(transactionsAggrMonth?.data, null, 2)}</pre>
-      
-          
+       */}
+          </div>
+          <div className="outerDiv">
          <div className="spreadsheetContNew">
-            <div className="layoutGrid">
-               <div className="grid layout-grid sheet col-7 font-bold">
+            <div className="spreadsheetCont w-auto *:min-w-full overflow-scroll">
+               <div className="font-bold horizGrid grid-cols-8 md:grid-cols-9">
                     <div className="">Date</div>
-                    <div className="col2">Category</div>
-                    <div className="col3">Description</div>
-                    <div className="col2">Type of <br />Account</div>
+                    <div className="col-span-2">Category</div>
+                    <div className="col-span-2">Description</div>
+                    <div className="hidden md:inline-flex">Type of Account</div>
                     {/*<div className="font-bold border-collapse border border-amber-500 w-[200px] p-2">Category</div>*/}
-                    <div className="">Amount</div>
-                    <div className="colsm">Edit</div>
-                    <div className="colsm">Delete</div>
+                    <div className=""><span className="md:hidden">Amt</span><span className="hidden md:inline-flex">Amount</span></div>
+                    <div className="">Edit</div>
+                    <div className="">Delete</div>
                 </div>
               </div>
             {transactionsAggrMonth ? (transactionsAggrMonth?.data?.map( (transaction) => 
                   
                 // <div key={transaction._id} className="transactionsList layoutGrid">
-                  <div key={transaction._id} className="layoutGrid">
+                  <div key={transaction._id} className="horizGrid">
 
-                    <div className="grid layout-grid sheet col-7">
+                    <div className="horizGrid grid-cols-8 md:grid-cols-9">
                     {/* { transaction.year == `${props.fyear}` && transaction.month == `${props.fmonth}` && transaction.month == `${props.fmonth}` && 
                     (`${props.category}` === 'all-categories' ||  transaction.title == `${props.category}`) &&  */}
                             {/* <> */}
-                        <div className="">{transaction?.month}/{transaction?.day}/{transaction?.year}</div>
-                        <div className="col2">{transaction?.title?.toUpperCase()}</div>
-                        <div className="col3">{transaction?.descr}</div>
-                        <div className="col2">{transaction?.acctype}</div>
+                        <div className="">{transaction?.month}/{transaction?.day}<span className="hidden md:inline-grid">/{transaction?.year}</span></div>
+                        <div className="col-span-2">{transaction?.title}</div>
+                        <div className="col-span-2">{transaction?.descr}</div>
+                        <div className="hidden md:inline-grid">{transaction?.acctype}</div>
                         <div className="">{transaction?.amount?.$numberDecimal}</div>
-                        <button className="yellowbg colsm" onClick={() => router.push(`/transactions-page/${transaction._id}`)}>
-              <div className="sr-only hidden first:md:not-sr-only  md:flex">Edit</div><BsFillPencilFill />
-             </button>
-              <button className="redbg colsm" onClick={(id:any) => deleteTransactionMutation.mutate(transaction._id)}>
-                <div className="sr-only hidden md:not-sr-only md:flex">Delete</div><AiFillDelete />
-                </button>
+                        <div><button className="yellowbg" onClick={() => router.push(`/transactions-page/${transaction._id}`)}>
+              <div className="sr-only hidden md:not-sr-only  md:inline-flex">Edit</div><BsFillPencilFill />
+             </button></div>
+             <div><button className="redbg" onClick={(id:any) => deleteTransactionMutation.mutate(transaction._id)}>
+                <div className="sr-only hidden md:not-sr-only md:inline-flex">Delete</div><AiFillDelete />
+                </button></div>
                     </div>
                     {/* <div>{transaction?.transactiontotal}</div> */}
                 </div>
                 
                )): "no transactions are available"}
                
-               </div>
-          {transactionsData?.data?.map((data:TransactionsAggregate) => (
-            <div key={data._id}>
-            {/* <h2>_id:{data._id}</h2> */}
-            <ul key={data?._id}>
+          {/* {transactionsData?.data?.map((data:TransactionsAggregate) => (
+            <div key={data._id} className="">
+            
+            <ul key={data?._id} className="">
                 <li>{data?.month}/{data?.day}/{data?.year}</li>
-                <li>{data?.title?.toUpperCase()}</li>
+                <li>{data?.title}</li>
                 <li>{data?.descr}</li>
                 <li>{data?.amount?.$numberDecimal}</li>
             </ul>
             </div>
             
         )
-        )} 
-       
+        )}  */}
+       </div>
         </div>
-    )
+   </> )
 }

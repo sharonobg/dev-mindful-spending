@@ -222,9 +222,11 @@ export async function GET(request:NextRequest,
    }},
   {
     "$sort": {
-      "_id.year": -1,
-      "_id.month":-1,
-      "_id.day":-1
+      "month":-1,
+      "day":-1,
+      "year": -1
+      
+      
       //"transdate":1
     }
 }

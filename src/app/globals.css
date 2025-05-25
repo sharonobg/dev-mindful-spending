@@ -33,7 +33,6 @@ form input:active, form select:active,input:active, select:active,textarea:activ
 
 nav a {
   @apply font-bold text-blue-100 gap-5
-  
 }
 
   h1 {
@@ -50,7 +49,10 @@ nav a {
   }
   main{
     
-    @apply flex flex-col items-center place-content-center text-center px-0 py-5 w-full overflow-x-hidden
+    @apply 
+    /* flex flex-col */
+    grid grid-flow-col
+     items-center place-content-center text-center px-0 py-5 w-full overflow-x-hidden
   }
   *, ::before, ::after {
     border-color: #ffbf00; 
@@ -67,10 +69,11 @@ button { @apply flex px-4 py-2 rounded-lg hover:opacity-80 }
   @apply bg-transparent text-sm
 }
 select.but{@apply border-blue-600 text-blue-600 border-2}
-.mycategoryArr{@apply flex gap-3 mb-5 flex-col}
+.underline{text-underline-offset: 5px}
+.mycategoryArr{@apply grid gap-3 mb-5 grid-flow-col}
 .hamburger-menu{@apply flex flex-col md:flex-row gap-5 }
 /* .hamburger.open{left:0;transition: 1s;} */
-.dashboardDiv{@apply place-items-center flex flex-col w-full}
+.dashboardDiv{@apply place-items-center flex flex-col w-full overflow-auto break-words}
 form.form-column{@apply flex flex-col p-4 flex-wrap gap-5 my-3}
 .signinform {
   label {@apply mt-auto mb-auto ml-1 mr-1 text-blue-600 text-lg font-bold}
@@ -99,31 +102,54 @@ nav a.active {
   
 }
 
-.mainDiv {@apply max-h-screen overflow-y-auto}
+.mainDiv {@apply flex max-h-screen overflow-y-auto}
 h1.border{@apply border-b-2 
   border-blue-500 
   border-spacing-1}
 .transactionsList > div{
-  @apply  flex flex-row h-auto p-0  my-0
+  @apply 
+  grid 
+  grid-flow-row
+  /* flex flex-row  */
+  h-auto p-0  my-0
 }
+.outerDiv {@apply place-items-center}
 .layoutGrid > div,.layoutGrid > button {@apply border-collapse border border-amber-500}
+.horizGrid {@apply grid grid-rows-1 overflow-auto bg-white}
+.totals{@apply grid font-bold w-full py-2 border-2 border-collapse border-amber-500 bg-white}
+.horizGrid > div,
+.amberBorder > div{@apply border border-amber-500 bg-white content-center align-middle}
+.font-bold.horizGrid > div {@apply py-2 px-1}
 .layout-grid {
-  @apply grid  bg-white break-all md:break-normal md:break-words
+  /* overflow-wrap:anywhere; */
+  @apply grid grid-flow-row bg-white 
+  /* break-words md:break-normal md:break-words */
 }
-.layout-grid.col-7{
+.grid-cols-7 {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+.grid-cols-9 {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+}
+/* .layout-grid.col-7{
   @apply grid grid-cols-11 bg-white break-all md:break-normal md:break-words
 }
 .layout-grid.col-5{
   grid-template-columns: repeat(6, minmax(0, 1fr));
   @apply grid grid-cols-6 bg-white break-all md:break-normal md:break-words 
-}
+} */
+/* .layout-grid.col-6 {@apply grid-cols-6 bg-pink} */
 .layout-grid > div,
 .layout-grid > button 
-{@apply grid justify-center col-span-1 items-center py-2 px-1 border-collapse border border-amber-500 break-words break-all align-middle}
-.layout-grid  .col2 {@apply col-span-2}
-.layout-grid  .col3 {@apply col-span-3}
+ {
+/*overflow-wrap:anywhere; */
+  @apply grid justify-center items-center py-2 px-1 border-collapse border border-amber-500 align-middle}
+/* .layout-grid  .col2 {@apply col-span-2}
+.layout-grid  .col3 {@apply col-span-3} */
 .layout-grid  .colsm {
   @apply p-0 m-0 }
+
+  .colsm {@apply col-span-1}
 .layout-grid  button { 
   background:none;
   border-radius:0; 
@@ -135,11 +161,17 @@ button.yellowbg {@apply bg-none bg-transparent text-yellow-500  flex justify-cen
 button.yellowbg svg,button.redbg svg{@apply text-xl md:text-lg}
 .yellowbg {@apply text-yellow-400 bg-none border-r-0}
 .spreadsheetCont {
-  @apply mt-5 flex p-0 flex-col  justify-center place-items-center items-center break-words
+  @apply mt-5 grid grid-flow-row p-0 place-items-center items-center break-words
 }
 /*.spreadsheetCont > .sheet,.transactionsList > .sheet,*/
 .sheet,.spkey{
-  @apply bg-white m-0 w-screen flex flex-row h-auto p-0 border border-collapse border-amber-500 break-words justify-center max-w-[800px]
+  @apply bg-white m-0 
+  /* w-screen  */
+  /* flex flex-row  */
+  h-auto p-0 
+  /* border border-collapse 
+  border-amber-500  */
+  break-words justify-center max-w-[800px]
 }
 .spreadsheetCont,.layoutGrid > div {@apply bg-white}
 .spreadsheetCont >.sheet>div,
@@ -148,8 +180,9 @@ button.yellowbg svg,button.redbg svg{@apply text-xl md:text-lg}
   word-wrap: break-word;*/
   @apply w-full border-collapse border border-amber-500 content-center justify-center break-all md:break-normal md:break-words
 }
-.editCol > a {@apply flex justify-center}
 
+.editCol > a {@apply flex justify-center}
+.editCol > a svg {display: inline-flex;padding-left: 2px;}
   ul{margin:25px;border:1px solid blue;padding:45px 0 10px;}
   li {
     display: flex;

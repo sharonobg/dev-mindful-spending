@@ -35,7 +35,7 @@ export default async function RootLayout({
          
             <Navbar />
             <div className="backgroundDiv"></div>
-            <main className="mt-8">
+            <main className="mt-8 place-items-center">
               <RQProvider>
                 <PropsProvider>
               {/* <PropsProvider> */}

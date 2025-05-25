@@ -7,7 +7,7 @@ import {authOptions} from "../api/auth/[...nextauth]/route";
 import TransactionsListId from '@/components/TransactionsListId';
 import {usePropsContext} from "@/query_components/PropsProvider";
 //import IncomeList from '../../components/IncomeList';
-//import IncomeListDates from '../../components/IncomeListDates';
+import IncomeListDates from '../../components/IncomeListDates';
 import Filters from '@/components/Filters';
 
 //import IncomeFilters from '@/src/components/IncomeFilters';
@@ -21,7 +21,6 @@ import Spendingplan from '@/models/spendingplanModel';
 import User from '@/models/userModel';
 import SpendingPlanList from '@/components/SpendingPlanList';
 //import MonthlySpendingPlanAllCatsT from '@/components/MonthlySpendingPlanAllCatsT';
-
 export default async function Dashboard({searchParams,
 }: {
   params: { id: string }
@@ -70,9 +69,11 @@ const thisYear = new Date().getFullYear()
     (
       <>
       <h1 className="largeTxt">My Spending</h1>
+      <h2><Link className="underline font-extrabold" href="/transactions-page">Add a Transaction</Link></h2>
+      
       
       <Filters />
-      <h2>Add a Category-don't include this</h2>
+      
     
       <SpendingPlanList spendingplanslist={spendingplanslist}/>
       {/* <SpendingPlanRunningTotAllCategories fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} /> */}
@@ -81,6 +82,7 @@ const thisYear = new Date().getFullYear()
       <SpendingPlanRunningTot fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
       <MonthlySpendingPlan fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
     
+    <IncomeListDates fyear={dbfilteryear} fmonth={dbfiltermonth} />
       {/*<pre><p>Categories available:{JSON.stringify(categories, null, 2)}</p></pre>
     
       <h1 className="largeTxt">Transactions</h1>

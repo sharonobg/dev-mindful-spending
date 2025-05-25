@@ -185,6 +185,8 @@ interface transactionData {
       interest = "interest",
       childsupport =  "child-support",
       retirementincome ="retirement-income",
+      savings ="from-savings",
+      businessincome ="business-income",
       otherincome =  "other"
    }
   type PlannedIncomeType = {

@@ -18,6 +18,8 @@ const IncomeSchema = new Schema(//planned monthly income org by type
                 "interest",
                 "child-support",
                 "retirement-income",
+                "from-savings",
+                "business-income",
                 "other"
             ]
     },

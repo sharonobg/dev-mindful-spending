@@ -14,11 +14,9 @@ export default async function RunningTotals(props:any) {
   const propsfield = {props};
   console.log('spendingplanruntot propsfield',propsfield);
   const grandtotals = await Transaction.aggregate([
-    { $match: { $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } } },//WORKS!!
-    { $match: {
-        "categoryId": { $exists: true, },
-         $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } 
-    }},
+    { $match: { 
+      "categoryId": { $exists: true, },
+      $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } } },
     {
       $addFields: {
         propsArray: {
@@ -45,11 +43,7 @@ export default async function RunningTotals(props:any) {
         },
         transactionyear: {
           $year: "$transdate"
-        },
-        month_date: {"$month": new Date() } ,
-        year_date: {"$year": new Date() } ,
-        //date_props:{"$propsfield":"fyear"},
-        //year_props:{fyear}
+        }
       }
   },
   {
@@ -57,61 +51,20 @@ export default async function RunningTotals(props:any) {
       $expr: {
         $and: [
           {
-            $eq: ["$transactionmonth","$propsArrayMonth"]
+            $eq: [
+              "$transactionmonth",
+              {$toInt:"$propsArrayMonth"}
+            ]
           },
           {
-            $eq: ["$transactionyear", "$propsArrayYear"]
+            $eq: [
+              "$transactionyear",
+              {$toInt:"$propsArrayYear"}
+            ]
           }
         ]
       }
     }
-  },
-  {
-    $lookup: {
-      from: "categories",
-      let: {
-        categoryId: {
-          $toObjectId: "$categoryId"
-        },
-        firstamount: {
-          $sum: "$amount"
-        }
-      },
-      pipeline: [
-        {
-          $match: {
-            $expr: {
-              $eq: ["$_id", "$$categoryId"]
-            }
-          }
-        },
-        {
-          $addFields: {
-            titleLower: {
-              $toLower: "$title"
-            }
-          }
-        },
-        {
-          $project: {
-            
-            categoryId: 1,
-            title: 1,
-            titleLower: "$titleLower",
-            category: "$category",
-            transdate: 1,
-            descr: 1,
-            plaintitle: "$category.title",
-            amount: 1,
-            firstamount: "$$firstamount"
-          }
-        }
-      ],
-      as: "category"
-    }
-  },
-  {
-    $unwind: "$category"
   },
   {
     $lookup: {
@@ -165,7 +118,6 @@ export default async function RunningTotals(props:any) {
         },
         {
           $project: {
-            //grandTotalId:"$_id",
             date: {
               mycategories: "$mycategories",
               transactionmonth:
@@ -206,52 +158,30 @@ export default async function RunningTotals(props:any) {
       propsArrayMonth: {
         $toInt: "$propsArrayMonth"
       },
-      month: {
+      transactionmonth: {
         $month: "$transdate"
       },
-      year: {
+      transactionyear: {
         $year: "$transdate"
       },
-      //title: "$title",
-      title: {
-        $toLower: "$category.title"
-      },
-      descr: 1,
       planamount: {
         $sum: "$mycategories.planamount"
       },
       totalamount: {
         $sum: "$amount"
-      },
-      month_date: 1,
-      year_date: 1
+      }
     }
   },
   {
     $group: {
       _id: {
-        //grandTotalId:"$grandTotalId",
         propsmonth: "$propsArrayMonth",
         propsyear: "$propsArrayYear",
-        month: "$month",
-        year: "$year",
-        month_date: "$month_date",
+        transactionmonth: "$transactionmonth",
+        transactionyear: "$transactionyear",
         year_date: "$year_date",
         planamount: "$planamount",
         sumamount: "$sumamount"
-
-        //date:"$date",
-        //date_props:"$date_props"
-        // },
-        //totalamount: {$sum: "$amount"},
-        // difference: {
-        //   $subtract: [
-        //     "$planamount",
-        //     "$sumamount",
-        //   ],
-        // },
-        //this groups by
-        //"$group" : {_id: "$categoryId","amount": {$sum: "$amount"}}//this groups by descr
       },
       totalamount: {
         $sum: "$totalamount"
@@ -260,8 +190,6 @@ export default async function RunningTotals(props:any) {
   },
   {
     $project: {
-      
-      //grandTotalId:"$grandTotalId",
       planamount: "$planamount",
       totalamount: "$totalamount",
       difference: {
@@ -271,19 +199,11 @@ export default async function RunningTotals(props:any) {
         ]
       }
     }
-  },
-  {
-    $sort: {
-      year: -1,
-      month: -1
-      //"name": 1
-    }
   }
   ])
   //spendingplan with grand totals
 const comboplans = await Transaction.aggregate([
         { $match: {
-            //"categoryId": { $exists: true, },
              $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } 
         }},
        
@@ -314,8 +234,6 @@ const comboplans = await Transaction.aggregate([
           transactionyear: {
             $year: "$transdate"
           },
-          month_date: {"$month": new Date() } ,
-          year_date: {"$year": new Date() } ,
         }
     },
     {
@@ -468,17 +386,7 @@ const comboplans = await Transaction.aggregate([
       }
     },
   
-    {
-      $addFields: {
-       
-        month_date: {
-          $month: new Date()
-        },
-        year_date: {
-          $year: new Date()
-        }
-      }
-    },
+
     {
       $project: {
         runningTotalId: "$_id",
@@ -491,7 +399,6 @@ const comboplans = await Transaction.aggregate([
         planmonth: "$mycategories.planmonth",
         planyear: "$mycategories.planyear",
         planamount: "$planamount",
-        year_date: "$year_date",
         amount: {
           $sum: "$amount"
         }
@@ -543,8 +450,6 @@ const comboplans = await Transaction.aggregate([
         planyear: "$planyear",
         amount: "$amount",
         planamount: "$_id.mycategories.planamount",
-        
-        
         difference: {
           $subtract: [
             "$_id.planamount",
@@ -553,7 +458,7 @@ const comboplans = await Transaction.aggregate([
         },
         
       },
-    },
+    }
       ])
           //const grandtotals = await getGrandTotals();
           //const comboplans = await comboPlans();
@@ -561,49 +466,48 @@ const comboplans = await Transaction.aggregate([
           const newD = new Date()
           //const month = newD.toLocaleString('default', { month: 'long' });
           const getYear = new Date().getFullYear()
-          const getMonthYear = getMonth +'/' +getYear;
+          // const getMonthYear = getMonth +'/' +getYear;
           // const propsMonth = {props.fmonht}
           // const propsYear = {props.fyear}
     return(
-      <div>
-         {/* <pre>Comboplans:{JSON.stringify(comboplans, null, 2)}</pre> */}
-      <h1>Planned and Actual Spending Running Totals for: {props.fmonth}/{props.fyear}.<br /> Showing: {props.category}</h1>
+      <>
+         {/*<pre>grandtotals:{JSON.stringify(grandtotals, null, 2)}</pre>*/}
+      <h1>Planned and Actual Spending Running Totals for: `{props.fmonth}/{props.fyear}.<br /> Showing: {props.category}</h1>
       <h2>If you don't see your Transaction category in this list, you may need to add the category to your Spending Plan</h2>
-      <div className="my-5 flex flex-col place-items-center spreadsheetCont">
-        <div className="sheet flex flex-row  w-full col-6 bg-white font-bold text-sm">
-          <div className="font-bold border border-amber-500 w-full p-2 ">Category</div>
-          <div className="font-bold border border-amber-500 w-full p-2 ">Category Notes</div>
-          <div className="font-bold border border-amber-500 w-full p-2 ">Planned Amount</div>
-          <div className="font-bold border border-amber-500 w-full py-2">Actual Amount</div>
-          <div className="font-bold border border-amber-500 w-full p-2 ">Difference</div>
-          <div className="font-bold border border-amber-500 w-full p-2 ">Explain Diff</div>
+      <div className="my-5 flex flex-col place-items-center spreadsheetCont overflow-x-scroll">
+        <div className="horizGrid grid-cols-8 md:grid-cols-8 w-full bg-white font-bold text-sm">
+          <div className="font-bold p-2 col-span-2">Category</div>
+          {/* <div className="font-bold border border-amber-500 w-full p-2 ">Category Notes</div> */}
+          <div className="font-bold p-2 col-span-2">Planned Amount</div>
+          <div className="font-bold py-2 col-span-2">Actual Amount</div>
+          <div className="font-bold p-2 col-span-2">Difference</div>
+          {/* <div className="font-bold border border-amber-500 w-full p-2 ">Explain Diff</div> */}
         </div>
       
-    {comboplans?.length > -1 ? (comboplans.map((comboplan,index:number) =>
-      <div key={index} className="spkey flex flex-row flex-col-6">
-            <div className="w-[200px]">{comboplan._id.categoryTitle}</div>
-            <div className="">{comboplan?._id.categorynotes}</div>
-            <div className="">{parseFloat(comboplan?._id.planamount).toFixed(2)}</div>
-            <div className="">{parseFloat(comboplan?.amount).toFixed(2)}</div>
-            <div className="">{parseFloat(comboplan?.difference).toFixed(2)}</div>
-            <div className="">{comboplan?._id.mycategories?.explain}</div>
+    {comboplans?.length > 0 ? (comboplans.map((comboplan,index:number) =>
+      <div key={index} className="horizGrid grid-cols-8 md:grid-cols-8 w-full">
+            <div className="col-span-2">{comboplan._id.categoryTitle}</div>
+            {/* <div className="">{comboplan?._id.categorynotes}</div> */}
+            <div className="col-span-2">{parseFloat(comboplan?._id.planamount).toFixed(2)}</div>
+            <div className="col-span-2">{parseFloat(comboplan?.amount).toFixed(2)}</div>
+            <div className="col-span-2">{parseFloat(comboplan?.difference).toFixed(2)}</div>
+            {/* <div className="">{comboplan?._id.mycategories?.explain}</div> */}
 
         </div>
-        )):"nothing here" }
-       {grandtotals?.length > -1 ? (grandtotals.map((grandtotal:any,index:number) =>
-        <div key={index} className="spkey flex flex-row flex-col-6 font-bold text-sm">
+        )):"nothing yet" }
+       {grandtotals?.length > 0 ? (grandtotals.map((grandtotal:any,index:number) =>
+        <div key={index} className="horizGrid grid-cols-8 md:grid-cols-8 w-full font-bold text-sm">
           
-          <div className="">Total:<br />{grandtotal._id.month}/{grandtotal._id.year}</div>
-          <div className="">index{index}</div>
-          <div className="">{parseFloat(grandtotal?._id.planamount).toFixed(2)}</div>
-          <div className="">{parseFloat(grandtotal?.totalamount).toFixed(2)}</div>
-          <div className="">{parseFloat(grandtotal?.difference).toFixed(2)}</div>
-          <div className=""></div>
+          <div className=" py-2 col-span-2">Total: {grandtotal._id.propsmonth}/{grandtotal._id.propsyear}</div>
+          {/* <div className="">index{index}</div> */}
+          <div className=" py-2 col-span-2">{parseFloat(grandtotal?._id.planamount).toFixed(2)}</div>
+          <div className=" py-2 col-span-2">{parseFloat(grandtotal?.totalamount).toFixed(2)}</div>
+          <div className=" py-2 col-span-2">{parseFloat(grandtotal?.difference).toFixed(2)}</div>
         </div>
-       )):("cant find any totals")
+       )):(" cant find grandtotals")
       }
        
         </div>
-    </div>
+    </>
     )
 }

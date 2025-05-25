@@ -95,7 +95,7 @@ const {
         <h2 className="text-2xl font-bold">View/Edit an Existing Spending Plan</h2>
               
                   {/* {JSON.stringify(spendingplansDataNew?.data,null,2)} */}
-                 {spendingplansData?.data?.map((spendingplansel:SpendingplanTypeAll,index:number) => (
+                 {spendingplansData && spendingplansData?.data?.map((spendingplansel:SpendingplanTypeAll,index:number) => (
                 <div className="flex flex-row justify-around items-center">
                 <div className="self-center" key={spendingplansel.id}>
                 {spendingplansel.planmonth}/{spendingplansel.planyear}/
@@ -107,7 +107,7 @@ const {
                 {/* <button onClick={() =>router.push(`/spendingplans-page/${spendingplansel.id}`) }>Select this plan</button> */}
                 </div>
                 ))}
-      <div className="flex flex-col bg-white w-full">
+    <div className="flex flex-col w-full place-items-center">
       <h2 className="text-2xl font-bold">Create a New Spending Plan</h2>
       
     <form className="flex flex-col place-items-center" id="testform" onSubmit={handleSubmit(handleCreateSpendingplanSubmit)}>
@@ -221,38 +221,40 @@ const {
         <h2>spendingplans status: {spendingplansData.status}</h2> */}
         {/* <h2>spendingplansData: {JSON.stringify(spendingplansData.data,null,2)}</h2> */}
         {/* <h2>spendingplansData parsed: {JSON.stringify(spendingplansData)}</h2> */}
-          <div key="spendingplans1" className="spreadsheetContNew">
-            <div key="spendingplans2" className="spreadsheetCont place-items-center">
+          {/* <div key="spendingplans1" className="spreadsheetContNew"> */}
+            {/* <div key="spendingplans2" className="flex flex-col spreadsheetCont place-items-center"> */}
+
+        </div>
+        <div className="outerDiv">
               <h2 className="text-2xl font-bold">My Spending Plans</h2>
             {spendingplansData ? (spendingplansData.data?.map((spendingplan:SpendingplanTypeAll)=>
-               <div key={spendingplan?.id} className="flex flex-col w-3/4">
+               <div key={spendingplan?.id} className="flex flex-col">
                   <div key={spendingplan?.planmonth + "_" +spendingplan?.planyear} className="my-4 font-bold text-lg flex flex-row place-items-center justify-around">
                     <span>spendingplan Month: {spendingplan?.planmonth}/{spendingplan?.planyear}</span>
-                    <span key="edit_delete" className="flex flex-row">
+                    <span key="edit_delete" className="flex flex-row justify-between align-middle">
                       <button key="edit" className="yellowbg colsm" onClick={() => router.push(`/spendingplans-page/${spendingplan?.id}`)}>
-                          <div className="sr-only hidden first:md:not-sr-only  md:flex">Edit</div><BsFillPencilFill />
+                          <div className="sr-only hidden first:md:not-sr-only md:flex">Edit</div><BsFillPencilFill />
                                 </button>
-                      <button key="delete" className="redbg colsm" onClick={(id:any) => deleteSpendingplannMutation.mutate(spendingplan.id)}>
+                      {/* <button key="delete" className="redbg colsm" onClick={(id:any) => deleteSpendingplannMutation.mutate(spendingplan.id)}>
                             <div className="sr-only hidden md:not-sr-only md:flex">Delete</div><AiFillDelete />
-                      </button>
+                      </button> */}
                       </span>
           </div>
-            <div key={spendingplan?.id} className="key categoriesRow place-items-center w-full">
-                    {spendingplan.mycategories.map((plancategory:MyCategoriesTypeAll)=>(
-                      <div className="grid layout-grid grid-flow-row col-5 w-full" key={plancategory?.mycategoryId}>
-                        <div key="1" className="">{plancategory?.title}</div>
-                        <div key="2" className="">{plancategory?.planamount.numberDecimal$}</div>
-                        <div key="3" className="col2">{plancategory?.categorynotes}</div>
-                        <div key="4" className="">{plancategory?.isChecked === true ? "true" : "false"}</div>
+            <div key={spendingplan?.id} className="key spreadsheetCont w-auto *:min-w-full overflow-scroll">
+              {spendingplan.mycategories.map((plancategory:MyCategoriesTypeAll)=>(
+                      <div className="horizGrid grid-cols-6 w-full" key={plancategory?.mycategoryId}>
+                        <div key="1" className="col-span-2">{plancategory?.title}</div>
+                        <div key="2" className="">{plancategory?.planamount.$numberDecimal}</div>
+                        <div key="3" className="col-span-2">{plancategory?.categorynotes}</div>
+                        {/* <div key="4" className="">{plancategory?.isChecked === true ? "true" : "false"}</div> */}
                         <div key="5" className="">{plancategory?.explain}</div>
                       </div>
                     ))}
                   </div>
-                </div>
+                 </div>
           )):"no plans available" }
          </div>
-        </div>
-      </div>
+       
       </> )
   //}
 }

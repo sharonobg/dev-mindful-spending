@@ -44,11 +44,15 @@ import SpendingPlanListFilter from "@/components/SpendingPlanListFilter";
       ):(
         <div id="welcome" className="m2 p2">
          
-        <Link href="/login">
-        {session?.user?.name ? (<h2>{session?.user?.name}</h2>):(<h2>You Are Not logged in</h2>)}
-        <h1>Please log in to see your Spending Plan</h1>
+         {session?.user?.name ? (<h2>{session?.user?.name}</h2>):(
+         <>
+         <Link href="/login"><h2>You Are Not logged in</h2>
+        <h1 >Please <span className="underline">Login</span> to see your Spending Plan</h1>
         </Link>
-        </div>
+        <h2 className="text-xl text-blue-500 font-bold">Or <Link href="/register"><span className="underline">Click Here</span> to Register</Link></h2>
+       
+       </>  )}
+       </div>
       )
       }
     </div>

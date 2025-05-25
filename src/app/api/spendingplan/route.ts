@@ -90,7 +90,9 @@ export async function GET(request:NextRequest,props:any){
             categorynotes:
               "$mycategories.categorynotes",
             explain: "$mycategories.explain",
-            title: "$newtitle",
+            title: {
+              $arrayElemAt: ["$result.title", 0]
+            },
             // newtitle: {
             //   $arrayElemAt: ["$result.title", 0]
             // },

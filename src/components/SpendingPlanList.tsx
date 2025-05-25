@@ -52,7 +52,7 @@ export default function FindSpendingPlan({spendingplanslist}:{spendingplanslist:
     )
         }
          </select>
-         <h2>ENDSpending plans list select</h2>
+         
           </>
     );
   }

@@ -19,6 +19,8 @@ enum Incometype{
     interest = "interest",
     childsupport =  "child-support",
     retirementincome ="retirement-income",
+    savings ="from-savings",
+    businessincome ="business-income",
     otherincome =  "other"
  }
 // type Income = {//object with individual type enter income i.e. from wages
@@ -113,6 +115,8 @@ const handleNewIncome = async (e: React.FormEvent<HTMLFormElement>) => {//each t
                 <option value="interest">Interest Received</option>
                 <option value="child-support">Child Support</option>
                 <option value="retirement-income">Retirement Income</option>
+                <option value="from-savings">From Savings</option>
+                <option value="business-income">Business Income</option>
                 <option value="other">Other Income</option>
                 </select>
                 <input onChange={(e) => setIncomeamount((e.target as HTMLInputElement).value)}

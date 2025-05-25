@@ -8,6 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      gridRow: {
+        'span-2': 'span 2 / span 2',
+      },
+      // gridTemplateColumns: {
+      //   'auto': 'repeat(auto-fill, minmax(200px, 1fr))',
+      // },
       // backgroundImage: {
       //   'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       //   'gradient-conic':

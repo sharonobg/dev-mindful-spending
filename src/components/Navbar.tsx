@@ -20,24 +20,16 @@ export default function Navbar() {
     }
    useEffect(() => {
         function getWidth() {
-
     if(typeof window !== undefined){
         const wW = window.innerWidth;
-        
         if(wW > 767){
             setIsdesktop(true)
         }
-        // const [isdesktop,setIsdesktop]=useState<boolean>(window.innerWidth > 767)
-        // setIsdesktop(isdesktop);
-}
-
-    }
+        }
+        }
     //console.log('isdesktop',isdesktop)
     getWidth();
-   }
-   
-
-   )
+   })
    console.log('isdesktop',isdesktop)
    console.log('navOpen',navOpen)
     //const switchNav=window.innerWidth<768?{openNav}:{desktopNav};
@@ -54,7 +46,7 @@ export default function Navbar() {
             {session?.user
             ? (<>
             <button onClick={openNav} className="hamburger font-bold text-white md:hidden">MENU</button>
-                <div className="hamburger-menu hover-sm-visible ">
+                <div className="hamburger-menu">
                
                 {(navOpen || isdesktop) && 
                 (

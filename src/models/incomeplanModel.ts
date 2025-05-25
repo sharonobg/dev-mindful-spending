@@ -11,6 +11,8 @@ const PlannedIncomeSchema = new Schema({
                 "interest",
                 "child-support",
                 "retirement-income",
+                "from-savings",
+                "business-income",
                 "other"
             ],
         ref: "Income",

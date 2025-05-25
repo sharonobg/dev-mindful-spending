@@ -14,6 +14,8 @@ enum IncomeType{
       interest = "interest",
       childsupport =  "child-support",
       retirementincome ="retirement-income",
+      savings ="from-savings",
+      businessincome ="business-income",
       otherincome =  "other"
    }
 export default function IncomeFilterTransaction() {

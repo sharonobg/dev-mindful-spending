@@ -8,7 +8,7 @@ export default async function LoginPage() {
     const session = await getServerSession(authOptions);
 
     return(
-        <div className="flex flex-columnm max-w-80">
+        <div className="flex flex-col place-items-center">
              <SigninForm session={session}/>
         </div>
     )

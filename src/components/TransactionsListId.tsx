@@ -317,14 +317,26 @@ $match: {
     {
       _id: {
         category: "$categoryId",
-        title: "$categoryTitle"
+        title: "$categoryTitle",
+       
       },
-      catsum: {
+       catsum: {
         $sum: "$amount"
       }
     }
 },
+{
+  $project:{
+    category:"$_id.category",
+    title:"$_id.title",
+    catsum:"$catsum",
+    totalamount: {
+        $sum: "$catsum"
+      }
+  }
+  
 
+},
 {
   $sort: {
     "_id.title": 1
@@ -333,17 +345,17 @@ $match: {
 ])
     return (
        <>
-       {/* <pre>Transaction Cats: {JSON.stringify(transactionscategories,null,2)}</pre>
-       <pre>GET transactions:{JSON.stringify(transactions, null, 2)}</pre> */}
+       {/*<pre>Transaction Cats: {JSON.stringify(transactionscategories,null,2)}</pre>
+        <pre>GET transactions:{JSON.stringify(transactions, null, 2)}</pre> */}
        <h2 className="font-bold">Categories View and Totals for {props.fmonth}/{props.fyear}:</h2>
-       <div className="spreadsheetCont">
-        <div className="sheet font-bold flex-col-2">
+       <div className="w-full">
+        <div className="amberBorder font-bold grid grid-cols-2 w-full">
             <div className="">Category</div>
             <div className="">Category Total</div>
         </div>
         {transactionscategories?.length > -1 ? (transactionscategories.map( (category) => 
           <>
-          <div key={category?._id?.category} className="sheet  flex-col-2">
+          <div key={category?._id?.category} className="amberBorder grid grid-cols-2 w-fullr">
             <div>{category?._id?.title}</div>
             <div>{parseFloat(category?.catsum).toFixed(2)}</div>
           </div>
@@ -351,32 +363,32 @@ $match: {
         )):"data unavailable"}
         </div>
        <h1>My Transactions List:  {props.fmonth}/{props.fyear}<br /></h1>
-       <div className="spreadsheetCont">
-       <div className="sheet font-bold flex-col-6">
-            <div className=""><span className="hidden md:flex">Month/Day/Year</span><span className="flex md:hidden">M/D/Y</span></div>
-            <div className="">Category</div>
-            <div className="">Description</div>
-            <div className="">Type of Account</div>
+       <div className="spreadsheetCont w-auto *:min-w-full overflow-scroll">
+       <div className="font-bold horizGrid grid-cols-8 md:grid-cols-9">
+            <div className="place-items-center"><span className="hidden md:inline-grid">Month/Day/Year</span><span className="flex md:hidden">M/D</span></div>
+            <div className="col-span-2 border border-blue-400">Category</div>
+            <div className="col-span-2 border border-blue-400">Descr<span className="hidden md:inline-grid">iption</span></div>
+            <div className="border border-blue-400 hidden md:inline-grid">Type<span className="hidden md:inline-grid">of Account</span></div>
             {/*<div className="font-bold border-collapse border border-amber-500 w-[200px] p-2">Category</div>*/}
-            <div className="">Amount</div>
-            <div className="">Edit / Delete</div>
+            <div className="col-span-2 border border-blue-400">Amount</div>
+            <div className="col-span-['50px'] border border-blue-400">Edit<span className="hidden md:inline-grid"> /Del</span></div>
         </div>
 
         {transactions?.length > -1 ? (transactions.map( (transaction) => 
           
         <div key={transaction.id} className="transactionsList">
         
-            <div className="sheet col-6">
+            <div className="horizGrid grid-cols-8 md:grid-cols-9">
             {/* { transaction.year == `${props.fyear}` && transaction.month == `${props.fmonth}` && transaction.month == `${props.fmonth}` && 
             (`${props.category}` === 'all-categories' ||  transaction.title == `${props.category}`) &&  */}
                     {/* <> */}
                     
-                <div className="">{transaction?._id.month}/{transaction._id.day}/{transaction._id.year}</div>
-                <div className="">{transaction?._id.title}</div>
-                <div className="">{transaction?._id.descr}</div>
-                <div className="">{transaction?._id.acctype}</div>
-                <div className="">{parseFloat(transaction?._id.amount).toFixed(2)}</div>
-                <div className= "editCol"> 
+                <div className=" ">{transaction?._id.month}/{transaction._id.day}<span className="hidden md:inline-grid">/{transaction._id.year}</span></div>
+                <div className="col-span-2">{transaction?._id.title}</div>
+                <div className="col-span-2">{transaction?._id.descr}</div>
+                <div className="hidden md:inline-grid">{transaction?._id.acctype}</div>
+                <div className="col-span-2">{parseFloat(transaction?._id.amount).toFixed(2)}</div>
+                <div className="editCol col-span-[50%]"> 
                   {/* <button onClick={transaction/{transaction._id.id}>nw</button>  */}
                   <Link href={`/transactions-page/${transaction?._id.id}`}><BsFillPencilFill /></Link>
                  {/*<Link className="flex flex-row gap-1 justify-center" href={`/transaction/${transaction?._id}`}><BsFillPencilFill /></Link>

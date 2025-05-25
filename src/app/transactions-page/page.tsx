@@ -15,11 +15,12 @@ const thisYear = new Date().getFullYear()
 //  const filtercategory= searchParams?.category? searchParams?.category : "all-categories"
  
     return (
-    <div>
+    <div className="dashboardDiv">
         {/* ServicesIDs:{JSON.stringify(getTransactionsIds,null,2)} */}
-        <h1>Transactions Server Page</h1>
+        <h1>Transactions Page</h1>
         <TransactionsComp />
-    </div>)
+    </div>
+    )
 
 }
 export default TransactionsServerPg

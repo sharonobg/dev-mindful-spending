@@ -31,7 +31,7 @@ export const authOptions: AuthOptions = {
    adapter: MongoDBAdapter(clientPromise),
    session:{
        strategy: 'jwt',
-       maxAge: 30 * 24 * 60 * 60,//THIRTY_DAYS,
+       maxAge: 30 * 60,//THIRTY_minutes,
        updateAge:30 * 60 //THIRTY_MINUTES
      },
    pages: {
