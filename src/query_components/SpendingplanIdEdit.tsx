@@ -105,7 +105,8 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
       _id: _id,
       planmonthyear:data.planmonthyear,
       mycategories:data.mycategories
-    })
+    });
+    console.log('data',data)
   }};
   const spendingplansData = useSpendingplansAggr();
   const categoriesManyQuery = useCategories();
@@ -238,7 +239,7 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
                 // key={`mycategories.${index}.mycategoryId`}
                   key={`field.mycategoriesId.${index}.mycategoryId`} 
                   defaultValue={`mycategories.${index}.mycategoryId`}
-                  value={category?._id}>{category.title}
+                  value={category?._id} selected>{category.title}
                 </option>
                 </> )}
             </select>
@@ -246,27 +247,39 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
             {/* <label>Planned Amount:{parseFloat(`mycategories.${index}.planamount`).toFixed(2)}</label> */}
             <label>Planned Amount:{ `mycategories.${index}.planamount`}</label>
             <input 
-              defaultValue={`mycategories.${index}.planamount`}
+              //defaultValue={`mycategories.${index}.planamount`}
               //id={field.planamount}
-              placeholder="Planned amount"
+              placeholder="0.00"
               {...register(`mycategories.${index}.planamount.$numberDecimal` as const,{required:"Missing the planned amount"})}
               aria-invalid={errors.id ? "true" : "false"}
                //     {errors.mycategories.planamount && errors.name.type === "required" && <span>This is required</span>}
                      //  {errors.name && errors.name.type === "maxLength" && <span>Max length exceeded</span> }
                />
                {/* <p>{errors.mycategories ? errors.mycategories[index]?.planamount?.message : null}</p> */}
-               <div key={`date_${field}`} className="errors.message text-red-600">{errors.mycategories?.message}</div>
                <label>{`mycategories.${index}.categorynotes`}Enter any Category Notes, i.e. for Rent could be "Chase mortgage"</label> 
                   {/* <input 
                     defaultValue={plancategory?.categorynotes}
                     // {...register(`mycategories.${index}.categorynotes` as const)} 
                   /> */}
-                  <p>{errors.mycategories ? errors.mycategories[index]?.categorynotes?.message : null}</p>
-                  <Controller
+                  {/* <p className="text-">ERROR{errors.mycategories ? errors.mycategories[index]?.categorynotes?.message : null}</p> */}
+                  {/* <Controller
                        render={({ field }) => <input {...field} />}
                        name={`mycategories.${index}.categorynotes`}
+                       
                        control={control}
-                     />
+                     /> */}
+                     <input 
+                   defaultValue={`mycategories.${index}.categorynotes`}
+                   placeholder="Category notes"
+                  {...register(`mycategories.${index}.categorynotes` as const,{
+                       minLength:{
+                        value:4,
+                        message:"A minimum of 4 characters required"
+                    }
+                  })}
+                  />
+                  <div key={`date_${field}`} className="error errors.message text-red-600">Error:{errors.mycategories ? errors.mycategories[index]?.categorynotes?.message : null}</div>
+
                  <label>{`mycategories.${index}.explain`}Explain why/if this is different this month</label>
                  <input 
                    defaultValue={`mycategories.${index}.explain`}
@@ -278,6 +291,8 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
                     }
                   })}
                   />
+           <div key={`date_${field}`} className="error errors.message text-red-600">{errors.mycategories ? errors.mycategories[index]?.explain?.message : null}</div>
+
                    {/* <label>Choose date</label>
                              <Controller
                                control={control}
@@ -312,15 +327,14 @@ const EditSpendingplanById = ({ params, }: { params:{id: string }}
                   //e.preventDefault();
                   append(
                   { 
-                     mycategoryId:'67918ac304905ddfc5d860f6',
-                     isChecked:true,
-                     explain:"explain difference",
-                     categorynotes:"add category notes",
-                     planamount:0.00,
+                     mycategoryId:"",
+            isChecked:false,
+            explain:"",
+            categorynotes:"",
+            planamount:""
                      //title:'' 
                     }
                     )}}
-
                ><span>Add a Category</span></button>
                <input type="submit" disabled={isPending} />
              </form>

@@ -1,3 +1,5 @@
+//import connect from "../../../libs/mongodb";
+//import{verifyToken} from '../../../libs/jwt'
 import {NextResponse,NextRequest} from "next/server";
 import {getToken} from "next-auth/jwt"
 import User from "@/models/userModel";
@@ -10,14 +12,16 @@ import Spendingplan from "@/models/spendingplanModel";
 export async function GET(req:NextRequest){
     //send data as JSON
     const secret = process.env.NEXTAUTH_SECRET;
-      const token = await getToken({req,secret});
-        if(!token){
-                return NextResponse.json(
-                  // {message: "Spendingplan deleted"},
-                  // {status: 500}
-                  {error: "unauthorized (wrong or expired token)"},
-                {status:403})
-            }
+    const token = await getToken({req,secret});
+        
+          
+            if(!token){
+                        return NextResponse.json(
+                          // {message: "Spendingplan deleted"},
+                          // {status: 500}
+                          {error: "unauthorized (wrong or expired token)"},
+                        {status:403})
+                    }
     try{
         //await connect();
         const session = await getServerSession(authOptions);
@@ -91,9 +95,9 @@ export async function GET(req:NextRequest){
                         year: "$$year",
                         planmonth: "$planmonth",
                         planyear: "$planyear",
-                        //categoryId: "$categoryId",
-                        //categoryTitle: "$title",
-                        //titleLower: "$titleLower",
+                        categoryId: "$categoryId",
+                        categoryTitle: "$title",
+                        titleLower: "$titleLower",
                       },
                     },
                   },
@@ -122,6 +126,9 @@ export async function GET(req:NextRequest){
             },
             {
               $project: {
+                categoryId: "$categoryId",
+                categoryTitle: "$title",
+                titleLower: "$titleLower",
                 //month : {$month : "$transdate"}, 
                 //year : {$year :  "$transdate"},
                 planmonth:{$toString:{$month : "$planmonth"}},
@@ -144,6 +151,9 @@ export async function GET(req:NextRequest){
          {
            "$group":{
              _id:{
+              categoryId: "$categoryId",
+              categoryTitle: "$title",
+              //titleLower: "$titleLower",
                year:"$year",
                month:"$month",
                month_date:"$month_date",

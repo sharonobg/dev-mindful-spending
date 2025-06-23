@@ -7,12 +7,22 @@ import connect from "@/libs/database/mongo";
 import { getToken } from 'next-auth/jwt';
 
 await connect()
-export async function GET(request:NextRequest,
+export async function GET(req:NextRequest,
   props:any,
   searchParams: {
   params: { id: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }){
+  const secret = process.env.NEXTAUTH_SECRET;
+        //const secret = await getEncryptedParameter('/prod/NEXTAUTH_SECRET')
+    const token = await getToken({req,secret});
+    if(!token){
+          return NextResponse.json(
+            // {message: "Spendingplan deleted"},
+            // {status: 500}
+            {error: "unauthorized (wrong or expired token)"},
+          {status:403})
+      }
     try{
         //await connect();
         // const month_date= new Date().getMonth() + 1;

@@ -30,10 +30,10 @@ export default async function IncomeListProps(props:any) {
           {
     $addFields: {
       propsArrayYear: {
-        $arrayElemAt: ["$propsArray.v.fyear", 0]
+        $toInt:{$arrayElemAt: ["$propsArray.v.fyear", 0]}
       },
       propsArrayMonth: {
-        $arrayElemAt: ["$propsArray.v.fmonth", 0]
+        $toInt:{$arrayElemAt: ["$propsArray.v.fmonth", 0]}
       },
       incomemonth: {
         $month: "$incomedate"
@@ -47,27 +47,8 @@ export default async function IncomeListProps(props:any) {
       year_date: {
         $year: new Date()
       }
-      //date_props:{"$propsfield":"fyear"},
-      //year_props:{fyear}
     }
   },
-  // {
-  //   $match: {
-  //     $expr: {
-  //       $and: [
-  //         {
-  //           $eq: [
-  //             "$incomemonth",
-  //             "$propsArrayMonth"
-  //           ]
-  //         },
-  //         {
-  //           $eq: ["$incomeyear", "$propsArrayYear"]
-  //         }
-  //       ]
-  //     }
-  //   }
-  // }
   {
     $project: {
       incomelistid: "$_id",
@@ -89,35 +70,8 @@ export default async function IncomeListProps(props:any) {
       propsArrayMonth: 1,
       incomemonth: "$incomemonth",
       incomeyear: "$incomeyear"
-      // sumamount: {
-      //   $sum: "$incomeamount"
-      // }
     }
   },
-  // {
-  //   $group: {
-  //     _id: {
-  //       id: "$_id",
-  //       incomelistid: "$incomelistid",
-  // sumamount:"$sumamount",
-  //       propsArrayYear: "$propsArrayYear",
-  //       propsArrayMonth: "$propsArrayMonth",
-  //       incomedate: "$incomedate",
-  //       incomedescr: "$incomedescr",
-  //       incometype: "$incometype",
-  //       day: "$day",
-  //       month: "$month",
-  //       year: "$year",
-  //       incomeamount: "$incomeamount",
-  //       incomemonth: "$incomemonth",
-  //       incomeyear: "$incomeyear"
-  //       //month_date:1
-  //     },
-  //     incometotal: {
-  //       $sum: "$incomeamount"
-  //     }
-  //   }
-  // }
   {
     $match: {
       $expr: {
@@ -161,10 +115,10 @@ const incometotals= await Income.aggregate([
   {
     $addFields: {
       propsArrayYear: {
-        $arrayElemAt: ["$propsArray.v.fyear", 0]
+        $toInt:{$arrayElemAt: ["$propsArray.v.fyear", 0]}
       },
       propsArrayMonth: {
-        $arrayElemAt: ["$propsArray.v.fmonth", 0]
+        $toInt:{$arrayElemAt: ["$propsArray.v.fmonth", 0]}
       },
       incomemonth: {
         $month: "$incomedate"
@@ -185,7 +139,7 @@ const incometotals= await Income.aggregate([
       _id: 0,
       incomelistid: "$_id",
       incomedate: 1,
-      // incomedescr: 1,
+      //incomedescr: 1,
       incometype: "$incometype",
       day: {
         $dayOfMonth: "$incomedate"
@@ -202,9 +156,6 @@ const incometotals= await Income.aggregate([
       propsArrayMonth: 1,
       incomemonth: "$incomemonth",
       incomeyear: "$incomeyear"
-      // sumamount: {
-      //   $sum: "$incomeamount"
-      // }
     }
   },
   {
@@ -241,7 +192,7 @@ const incometotals= await Income.aggregate([
     return(
        <>
        
-      {/* <pre>GET income list dates:{JSON.stringify(incometotals, null, 2)}</pre> */}
+     <pre>GET income list dates:{JSON.stringify(incomelist, null, 2)}</pre>
        
        <div>
        <h1>Income List For:{props.fmonth}/{props.fyear}</h1>

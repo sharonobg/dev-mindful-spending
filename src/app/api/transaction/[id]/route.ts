@@ -12,6 +12,14 @@ import mongoose from "mongoose";
 import { headers } from 'next/headers'
 
 export async function GET(req:NextRequest,{ params }: { params: { id: string } } ){
+    const secret = process.env.NEXTAUTH_SECRET;
+          //const secret = await getEncryptedParameter('/prod/NEXTAUTH_SECRET')
+      const token = await getToken({req,secret});
+      if(!token){
+            return NextResponse.json(
+              {error: "unauthorized (wrong or expired token)"},
+            {status:403})
+        }
     try{
         const session = await getServerSession(authOptions);
         const sessionUser = session?.user?.email;
@@ -83,7 +91,6 @@ export async function DELETE(req:NextRequest,{ params }:{params:{slug:string}}){
         const token = accessToken.split(" ")[1]
         const decodedToken = token
         if(!accessToken||decodedToken == null){
-            
             return new Response(JSON.stringify({error: "unauthorized (wrong or expired token)"}),{status:403})
         }
     }

@@ -214,251 +214,268 @@ const comboplans = await Transaction.aggregate([
           }
         }
       },
-      { 
-        $addFields: {
-          propsArrayYear: {
-            $toInt:{$arrayElemAt: ["$propsArray.v.fyear", 0]}
-          },
-          propsArrayMonth: {
-            $toInt:{$arrayElemAt: ["$propsArray.v.fmonth", 0]}
-          },
-          propsArrayCategory: {
-            $arrayElemAt: [
-              "$propsArray.v.category",
-              0
-            ]
-          },
-          transactionmonth: {
-            $month: "$transdate"
-          },
-          transactionyear: {
-            $year: "$transdate"
-          },
+       {
+    $addFields: {
+      propsArrayYear: {
+        $toInt: {
+          $arrayElemAt: ["$propsArray.v.fyear", 0]
         }
-    },
-    {
-      $match: {
-        $expr: {
-          $and: [
-            {
-              $eq: ["$transactionmonth","$propsArrayMonth"]
-            },
-            {
-              $eq: ["$transactionyear", "$propsArrayYear"]
-            }
+      },
+      propsArrayMonth: {
+        $toInt: {
+          $arrayElemAt: [
+            "$propsArray.v.fmonth",
+            0
           ]
         }
+      },
+      propsArrayCategory: {
+        $arrayElemAt: [
+          "$propsArray.v.category",
+          0
+        ]
+      },
+      transactionday: {
+        $dayOfMonth: "$transdate"
+      },
+      transactionmonth: {
+        $month: "$transdate"
+      },
+      transactionyear: {
+        $year: "$transdate"
+      },
+      month_date: {
+        $month: new Date()
+      },
+      year_date: {
+        $year: new Date()
       }
-    },
-    {
-      $lookup: {
-        from: "categories",
-        let: {
-          categoryId: {
-            $toObjectId: "$categoryId"
-          }
-        },
-        pipeline: [
+    }
+  },
+  {
+    $match: {
+      $expr: {
+        $and: [
           {
-            $match: {
-              $expr: {
-                $and: [
-                  {
-                    $eq: ["$_id", "$$categoryId"]
-                  },
-                  {
-                    $eq: [
-                      "$month",
-                      "$propsArrayMonth"
-                    ]
-                  },
-                  {
-                    $eq: [
-                      "$year",
-                      "$propsArrayYear"
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-        
-          {
-            $addFields: {
-              titleLower: {
-                $toLower: "$title"
-              }
-            }
+            $eq: [
+              "$transactionmonth",
+              "$propsArrayMonth"
+            ]
           },
           {
-            $project: {
-              categoryId: 1,
-              title: 1,
-              titleLower: "$titleLower"
-            }
+            $eq: [
+              "$transactionyear",
+              "$propsArrayYear"
+            ]
           }
-        ],
-        as: "category"
+        ]
       }
-    },
-    {
-      $lookup: {
-        from: "spendingplans",
-        let: {
-          authorId: "$authorId",
-          transactionmonth: {
-            $month: "$transdate"
-          },
-          transactionyear: {
-            $year: "$transdate"
-          }
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ["$authorId", "$$authorId"]
-              }
-            }
-          },
-          {
-            $addFields: {
-              planmonth: {
-                $month: "$planmonthyear"
-              },
-              planyear: {
-                $year: "$planmonthyear"
-              }
-            }
-          },
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  {
-                    $eq: [
-                      "$planmonth",
-                      "$$transactionmonth"
-                    ]
-                  },
-                  {
-                    $eq: [
-                      "$planyear",
-                      "$$transactionyear"
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-          {
-            $project: {
-              // _id: 0,
-              date: {
-                mycategories: "$mycategories",
-                transactionmonth:
-                  "$$transactionmonth",
-                transactionyear:
-                  "$$transactionyear",
-                planmonth: "$planmonth",
-                planyear: "$planyear",
-                planamount:
-                  "$mycategories.planamount",
-                categoryId: "$categoryId",
-                categoryTitle: "$title",
-                titleLower: "$titleLower",
-                amount: "$amount"
-              }
-            }
-          },
-          {
-            $replaceRoot: {
-              newRoot: "$date"
-            }
-          }
-        ],
-        as: "mycategories"
-      }
-    },
-    {
-      $unwind: {
-        path: "$mycategories"
-      }
-    },
-  
-
-    {
-      $project: {
-        runningTotalId: "$_id",
-        categoryId: "$categoryId",
-        transactionmonth: 1,
-        transactionyear: 1,
-        title: "$category.title",
-        titleLower: "$category.titleLower",
-        mycategories: "$mycategories.mycategories",
-        planmonth: "$mycategories.planmonth",
-        planyear: "$mycategories.planyear",
-        planamount: "$planamount",
-        amount: {
-          $sum: "$amount"
+    }
+  },
+  {
+    $lookup: {
+      from: "categories",
+      let: {
+        categoryId: {
+          $toObjectId: "$categoryId"
         }
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $and: [
+                {
+                  $eq: ["$_id", "$$categoryId"]
+                },
+                {
+                  $eq: [
+                    "$month",
+                    "$propsArrayMonth"
+                  ]
+                },
+                {
+                  $eq: [
+                    "$year",
+                    "$propsArrayYear"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          $addFields: {
+            titleLower: {
+              $toLower: "$title"
+            }
+          }
+        },
+        {
+          $project: {
+            categoryId: 1,
+            title: 1,
+            titleLower: "$titleLower"
+          }
+        }
+      ],
+      as: "category"
+    }
+  },
+  {
+    $lookup: {
+      from: "spendingplans",
+      let: {
+        authorId: "$authorId",
+        transactionmonth: {
+          $month: "$transdate"
+        },
+        transactionyear: {
+          $year: "$transdate"
+        }
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ["$authorId", "$$authorId"]
+            }
+          }
+        },
+        {
+          $addFields: {
+            planmonth: {
+              $month: "$planmonthyear"
+            },
+            planyear: {
+              $year: "$planmonthyear"
+            }
+          }
+        },
+        {
+          $match: {
+            $expr: {
+              $and: [
+                {
+                  $eq: [
+                    "$planmonth",
+                    "$$transactionmonth"
+                  ]
+                },
+                {
+                  $eq: [
+                    "$planyear",
+                    "$$transactionyear"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          $project: {
+            // _id: 0,
+            date: {
+              mycategories: "$mycategories",
+              transactionmonth:
+                "$$transactionmonth",
+              transactionyear:
+                "$$transactionyear",
+              planmonth: "$planmonth",
+              planyear: "$planyear",
+              planamount:
+                "$mycategories.planamount",
+              categoryId: "$categoryId",
+              categoryTitle: "$title",
+              titleLower: "$titleLower",
+              amount: "$amount"
+            }
+          }
+        },
+        {
+          $replaceRoot: {
+            newRoot: "$date"
+          }
+        }
+      ],
+      as: "mycategories"
+    }
+  },
+  {
+    $unwind: {
+      path: "$mycategories"
+    }
+  },
+  {
+    $project: {
+      runningTotalId: "$_id",
+      categoryId: "$categoryId",
+      transactionmonth: 1,
+      transactionyear: 1,
+      title: "$category.title",
+      titleLower: "$category.titleLower",
+      mycategories: "$mycategories.mycategories",
+      planmonth: "$mycategories.planmonth",
+      planyear: "$mycategories.planyear",
+      planamount: "$planamount",
+      amount: {
+        $sum: "$amount"
       }
-    },
-    {
-      $unwind: {
-        path: "$mycategories"
-      }
-    },
-   
-    {
-      $match: {
-        $expr: {
-          // $and: [
-          // {
+    }
+  },
+  {
+    $unwind: {
+      path: "$mycategories"
+    }
+  },
+  {
+    $match: {
+      $expr: {
+        // $and: [
+        // {
+        $not: {
           $eq: [
             "$mycategories.mycategoryId",
             "$categoryId"
           ]
         }
-        
       }
-    },
-    {
-      $group: {
-        _id: {
-          planamount: "$mycategories.planamount",
-          categorynotes:"$mycategories.categorynotes",
-          explain:"$mycategories.explain",
-          planmonth: "$planmonth",
-          planyear: "$planyear",
-          categoryTitle: "$title",
-          titleLower: "$titleLower",
-          categoryId: "$categoryId"
-        },
-        
-        amount: {
-          $sum: "$amount"
-        }
-      }
-    },
-    {
-      $project: {
-        runningTotalId:1,
-        propsArrayMonth:"$propsArrayMonth",
-        propsArrayYear:1,
-        planmonth: "$planmonth",
-        planyear: "$planyear",
-        amount: "$amount",
-        planamount: "$_id.mycategories.planamount",
-        difference: {
-          $subtract: [
-            "$_id.planamount",
-            "$amount",
-          ],
-        },
-        
-      },
     }
+  },
+  {
+    $group: {
+      _id: {
+         //planamount: "$mycategories.planamount",
+        // categorynotes:
+        //   "$mycategories.categorynotes",
+        // explain: "$mycategories.explain",
+        // planmonth: "$planmonth",
+        // planyear: "$planyear",
+        categoryTitle: "$title",
+        titleLower: "$titleLower",
+        categoryId: "$categoryId"
+      },
+      count:{ $count: { } } ,
+      amount: {
+        $sum: "$amount"
+      }
+     
+    }
+  },
+  {
+    $project: {
+      runningTotalId: 1,
+      propsArrayMonth: "$propsArrayMonth",
+      propsArrayYear: 1,
+      planmonth: "$planmonth",
+      planyear: "$planyear",
+      amount: "$amount",
+      planamount: "$_id.mycategories.planamount",
+      difference: {
+        $subtract: ["$_id.planamount", "$amount"]
+      }
+    }
+  }
       ])
           //const grandtotals = await getGrandTotals();
           //const comboplans = await comboPlans();
@@ -471,8 +488,8 @@ const comboplans = await Transaction.aggregate([
           // const propsYear = {props.fyear}
     return(
       <>
-         {/*<pre>grandtotals:{JSON.stringify(grandtotals, null, 2)}</pre>*/}
-      <h1>Planned and Actual Spending Running Totals for: `{props.fmonth}/{props.fyear}.<br /> Showing: {props.category}</h1>
+         <pre>SpendingPlanRunningNewCats:{JSON.stringify(comboplans, null, 2)}</pre>
+      <h1>SpendingPlanRunningNewCats: `{props.fmonth}/{props.fyear}.<br /> Showing: {props.category}</h1>
       <h2>If you don't see your Transaction category in this list, you may need to add the category to your Spending Plan</h2>
       <div className="my-5 flex flex-col place-items-center spreadsheetCont overflow-x-scroll">
         <div className="horizGrid grid-cols-8 md:grid-cols-8 w-full bg-white font-bold text-sm">
@@ -496,7 +513,7 @@ const comboplans = await Transaction.aggregate([
         </div>
         )):"nothing yet" }
        {grandtotals?.length > 0 ? (grandtotals.map((grandtotal:any,index:number) =>
-        <div key={index} className="totals grid-cols-8 md:grid-cols-8 w-full font-bold text-sm">
+        <div key={index} className="horizGrid grid-cols-8 md:grid-cols-8 w-full font-bold text-sm">
           
           <div className=" py-2 col-span-2">Total: {grandtotal._id.propsmonth}/{grandtotal._id.propsyear}</div>
           {/* <div className="">index{index}</div> */}

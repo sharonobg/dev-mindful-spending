@@ -34,7 +34,7 @@ export default function SimpleFilterTransaction() {
     const queryMonth = searchParams.get('fmonth') != null ? searchParams.get('fmonth'):getMonth;
     const queryYear = searchParams.get('fyear') != null ? searchParams.get('fyear'):getYear;
     
-    //console.log('queryCategory filter: ',queryCategory)
+    console.log('queryCategory filter: ',queryCategory)
     console.log('queryMonth filter: ',queryMonth)
     console.log('queryYear filter: ',queryYear)
     const params = searchParams ? searchParams : undefined;

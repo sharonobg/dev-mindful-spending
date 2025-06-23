@@ -30,8 +30,8 @@ export default function Navbar() {
     //console.log('isdesktop',isdesktop)
     getWidth();
    })
-   console.log('isdesktop',isdesktop)
-   console.log('navOpen',navOpen)
+//    console.log('isdesktop',isdesktop)
+//    console.log('navOpen',navOpen)
     //const switchNav=window.innerWidth<768?{openNav}:{desktopNav};
 //    if(window.innerWidth >767){setIsdesktop(true)}else{setIsdesktop(false)}
     return(<>
@@ -45,8 +45,8 @@ export default function Navbar() {
             
             {session?.user
             ? (<>
-            <button onClick={openNav} className="hamburger font-bold text-white md:hidden">MENU</button>
-                <div className="hamburger-menu">
+            <button onClick={openNav} className="hamburger font-bold text-white md:hidden">{navOpen ? <span className="text-xl">X</span> : <span className="text-lg">MENU</span>}</button>
+                <div className="hamburger-menu text-lg duration-1000">
                
                 {(navOpen || isdesktop) && 
                 (

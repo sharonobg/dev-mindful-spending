@@ -41,7 +41,7 @@ export async function PUT(req:NextRequest,{params}:{ params:{id:string}}){
        //console.log('body befor breaks: ',body)
        const income = await Income.findById(id).populate("authorId");
    console.log('id ROUTE PUT(populate) income: ',income)
-       if(income?.authorId?._id.toString() !== userid){
+       if(income?.authorId?._id.toString() !== userid.toString()){
            console.log('user ln 50',user._id)
            console.log('author',income?.authorId?._id.toString())
            return new Response(JSON.stringify({message:"Only author can update their income"}),{status:403})
@@ -77,7 +77,7 @@ export async function DELETE(req:NextRequest,{ params }:{params:{slug:string}}){
   const userid = user._id;
   try{
       const income = await Income.findById(id).populate("authorId");
-      if(income?.authorId?._id.toString() !== userid){
+      if(income?.authorId?._id.toString() !== userid.toString()){
           return new Response(JSON.stringify({message:"Only author can delete their income"}),{status:403})
       }
       await Income.findByIdAndDelete({id })

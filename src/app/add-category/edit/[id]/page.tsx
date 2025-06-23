@@ -38,9 +38,9 @@ const handleSubmit= async (e:React.FormEvent<HTMLFormElement>) => {
     }
     try{
         const id = {params};
-        console.log('id',id)
+        //console.log('id',id)
         const body = {title}
-        console.log('body',body)
+        //console.log('body',body)
         const res = await fetch(`/api/category/${params.id}`,{
         headers: {
             "Content-Type": 'application/json',
@@ -57,7 +57,7 @@ const handleSubmit= async (e:React.FormEvent<HTMLFormElement>) => {
         console.log("Edit failed")
     }
     const category = await res.json();
-    console.log('category in put',category);
+    //console.log('category in put',category);
     router.push("/dashboard");
     }catch(error){
         console.log('edit category',error)

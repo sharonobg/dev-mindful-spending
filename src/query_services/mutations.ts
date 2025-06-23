@@ -70,15 +70,18 @@ import {useRouter} from 'next/navigation';
 //newtransactions
 export function useTransactionsCreate(){
     const queryClient = useQueryClient()
+     const router = useRouter();
     return useMutation({
         
         mutationFn:(data:TransactionType) => createTransaction(data),
-        onMutate:() => {
-            console.log('mutate')
+        onMutate: () => {
+        
         },
         onError: () => {console.log('error')},
         onSuccess: () => {
+             
             queryClient.invalidateQueries({queryKey: ['transactions']})
+            router.push("/transactions-page")
         },
         onSettled:async (data,error,variables) => {
             if(error){
@@ -98,6 +101,7 @@ export function useUpdateTransactionMutation() {
         mutationFn: (data:TransactionType) => newUpdateTransaction(data),
         onSuccess:(data,variables) => {
             queryClient.setQueryData(['transaction',{ id: variables._id }], data)
+            
         },
         onSettled:async(data,error,variables:any) => {
             if(error){console.log('updateTransaction',error)}else{
@@ -128,7 +132,8 @@ export function useCreateTransactionMutation() {
             console.log("mutate");
         },
         onError: () => {console.log('error')},
-        onSuccess: () => {
+        
+        onSuccess: () => { 
             queryClient.invalidateQueries({queryKey: ['transactions']})
         },
         onSettled:async (data,error,variables) => {

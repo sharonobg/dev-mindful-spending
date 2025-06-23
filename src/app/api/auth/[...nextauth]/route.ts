@@ -52,6 +52,7 @@ export const authOptions: AuthOptions = {
        },
        async redirect({ url,baseUrl }) {
            return "/dashboard"
+           
          },
        jwt: async ({ token, trigger, account, profile, user, session}) => {
            if (user) {

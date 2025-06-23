@@ -20,7 +20,18 @@ export default async function TransactionList(props:any) {
   const userid = user._id
   const propsfield = {props};
   console.log('transactions propsfield',propsfield)
-  const categoryView = await Transaction.aggregate([{
+  const categoryView = await Transaction.aggregate([
+     { $match: {
+        $expr : { $eq: [ '$authorId' , { $toObjectId: userid } ] } 
+    }},
+    {
+      $addFields: {
+        propsArray: {
+          $objectToArray: propsfield,
+        }
+      }
+    },
+    {
     $addFields: {
       propsArrayYear: {
         $toInt: {
@@ -90,6 +101,7 @@ export default async function TransactionList(props:any) {
             categoryId: "$categoryId",
             propsArraycategory:
               "$propsArray.v.category",
+            categoryTitle:"$title",
             title: {
               $toLower: "$title"
             },
@@ -155,6 +167,7 @@ export default async function TransactionList(props:any) {
         $year: "$transdate"
       },
       categoryId: "$categoryId",
+      categoryTitle: "$categoryTitle",
       title: {
         $toLower: "$category.title"
       },
@@ -344,8 +357,6 @@ export default async function TransactionList(props:any) {
           title: { $toLower : "$category.title" },
           "amount":1,
           month_date:1,
-          
-
         }},
         
       {
@@ -556,6 +567,34 @@ $match: {
 ])
     return (
        <>
+       <pre>Category View: {JSON.stringify(categoryView,null,2)}</pre>
+       <h2 className="font-bold">Categories Details {props.fmonth}/{props.fyear}:{props.fcategory}</h2>
+       <div className="spreadsheetCont w-auto *:min-w-full overflow-scroll">
+       <div className="font-bold horizGrid grid-cols-8 md:grid-cols-9">
+            <div className="place-items-center"><span className="hidden md:inline-grid">Month/Day/Year</span><span className="flex md:hidden">M/D</span></div>
+            <div className="col-span-2 border border-blue-400">Category</div>
+            <div className="col-span-2 border border-blue-400">Descr<span className="hidden md:inline-grid">iption</span></div>
+            <div className="border border-blue-400 hidden md:inline-grid">Type<span className="hidden md:inline-grid">of Account</span></div>
+            {/*<div className="font-bold border-collapse border border-amber-500 w-[200px] p-2">Category</div>*/}
+            <div className="col-span-2 border border-blue-400">Amount</div>
+            
+        </div>
+        {categoryView?.length > -1 ? (categoryView.map( (transactioncat) => 
+          
+        <div key={transactioncat.id} className="transactionsList">
+        
+            <div className="horizGrid grid-cols-8 md:grid-cols-9">
+                <div className=" ">{transactioncat?.transactionmonth}/{transactioncat.transactionday}<span className="hidden md:inline-grid">/{transactioncat.transactionyear}</span></div>
+                <div className="col-span-2">{transactioncat?.title}</div>
+                <div className="col-span-2">{transactioncat?.descr}</div>
+                <div className="hidden md:inline-grid">{transactioncat?.acctype}</div>
+                <div className="col-span-2">{parseFloat(transactioncat?.amount).toFixed(2)}</div>
+              
+            </div>
+        </div>
+       )): "no transactions are available"}
+       
+       </div>
        {/*<pre>Transaction Cats: {JSON.stringify(transactionscategories,null,2)}</pre>
         <pre>GET transactions:{JSON.stringify(transactions, null, 2)}</pre> */}
        <h2 className="font-bold">Categories View and Totals for {props.fmonth}/{props.fyear}:</h2>

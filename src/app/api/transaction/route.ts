@@ -6,8 +6,18 @@ import {authOptions}from"../../api/auth/[...nextauth]/route"
 import User from "@/models/userModel";
 import { getToken } from "next-auth/jwt";
 
-export async function GET(request:NextRequest,params:number){
+export async function GET(req:NextRequest,params:number){
   //send data as JSON
+  const secret = process.env.NEXTAUTH_SECRET;
+        //const secret = await getEncryptedParameter('/prod/NEXTAUTH_SECRET')
+    const token = await getToken({req,secret});
+    if(!token){
+          return NextResponse.json(
+            // {message: "Spendingplan deleted"},
+            // {status: 500}
+            {error: "unauthorized (wrong or expired token)"},
+          {status:403})
+      }
   try{
       //await connect();
       const yeardate = params;

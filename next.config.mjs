@@ -38,6 +38,10 @@ const nextConfig = {
              key: 'Referrer-Policy',
              value: 'origin-when-cross-origin',
            },
+            { key: "Referrer-Policy", 
+              value: "strict-origin-when-cross-origin" 
+            }
+
          ],
        },
      ];

@@ -1,3 +1,5 @@
+import {getServerSession} from "next-auth";
+import {authOptions} from "../api/auth/[...nextauth]/route";
 import TransactionsComp from "@/query_components/TransactionsComp"
 // import { getTransactionsIds } from "@/query_services/services"
 

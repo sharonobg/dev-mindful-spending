@@ -7,7 +7,16 @@ import { getToken } from "next-auth/jwt";
 
 
 //monthly spending plan
-export async function GET(request:NextRequest,params:number,props:any) {
+export async function GET(req:NextRequest,params:number,props:any) {
+  const secret = process.env.NEXTAUTH_SECRET;
+   const token = await getToken({req,secret});
+    if(!token){
+          return NextResponse.json(
+            // {message: "Spendingplan deleted"},
+            // {status: 500}
+            {error: "unauthorized (wrong or expired token)"},
+            {status:403})
+        }
   try{
     //const transactiontotals = await getTotals();
     //const getplans = await getPlans();
@@ -21,7 +30,6 @@ export async function GET(request:NextRequest,params:number,props:any) {
     const sessionUser = session?.user?.email;
     const user = await User.findOne({email:sessionUser});
     const userid = user._id;
-    
     const propsfield = {props};
     console.log('spendingplan combo propsfield',propsfield);
     const spendingplansagg = await Spendingplan.aggregate([

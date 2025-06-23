@@ -6,10 +6,19 @@ import {authOptions}from"../auth/[...nextauth]/route"
 import Income from "../../../models/incomeModel";
 import User from "../../../models/userModel";
 
-export async function GET(request:NextRequest,props:any){
-  //send data as JSON
+export async function GET(req:NextRequest,props:any){
+  const secret = process.env.NEXTAUTH_SECRET;
+    const token = await getToken({req,secret});
+        
+          
+            if(!token){
+                        return NextResponse.json(
+                          // {message: "Spendingplan deleted"},
+                          // {status: 500}
+                          {error: "unauthorized (wrong or expired token)"},
+                        {status:403})
+                    }
   try{
-    
     const propsapi = {props}
     const session = await getServerSession(authOptions);
     const sessionUser = session?.user?.email;
@@ -28,17 +37,24 @@ export async function GET(request:NextRequest,props:any){
 }
 
 export async function POST(req:NextRequest){
-  //await connect();
-  
-const secret = process.env.NEXTAUTH_SECRET;
-  //const token = await getToken({req,secret});
+ const secret = process.env.NEXTAUTH_SECRET;
   const session = await getServerSession(authOptions);
-  const sessionUser = session?.user?.email;
-  const user = await User.findOne({email:sessionUser});
-  const userid = user._id;
   
+   const token = await getToken({req,secret});
+        
+          
+            if(!token){
+                        return NextResponse.json(
+                          // {message: "Spendingplan deleted"},
+                          // {status: 500}
+                          {error: "unauthorized (wrong or expired token)"},
+                        {status:403})
+                    }
   if(session){
   try{
+    const sessionUser = session?.user?.email;
+    const user = await User.findOne({email:sessionUser});
+    const userid = user._id;
       const body = await req.json();
       //console.log("body",body);
       const newIncome = await Income.create(
@@ -65,8 +81,14 @@ const secret = process.env.NEXTAUTH_SECRET;
 }
   
 export async function DELETE(req:NextRequest){
+  const secret = process.env.NEXTAUTH_SECRET;
+  const session = await getServerSession(authOptions);
+   const token = await getToken({req,secret});
     //send data as json
     const id = req.nextUrl.searchParams.get('id');
+    const sessionUser = session?.user?.email;
+  const user = await User.findOne({email:sessionUser});
+  const userid = user._id;
     //await connect();
     await Income.findByIdAndDelete(id);
     return NextResponse.json(

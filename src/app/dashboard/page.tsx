@@ -1,20 +1,14 @@
 import Link from 'next/link';
-
-//import Category from '@/src/models/categoryModel';
-//import { Suspense } from 'react'
 import {getServerSession} from "next-auth";
 import {authOptions} from "../api/auth/[...nextauth]/route";
 import TransactionsListId from '@/components/TransactionsListId';
-import {usePropsContext} from "@/query_components/PropsProvider";
-//import IncomeList from '../../components/IncomeList';
+import TransactionsListIdWithCats from '@/components/TransactionsListIdWithCats';
 import IncomeListDates from '../../components/IncomeListDates';
 import Filters from '@/components/Filters';
-
-//import IncomeFilters from '@/src/components/IncomeFilters';
-//import Categories from "@/src/components/Categories";
 import MonthlySpendingPlan from '@/components/MonthlySpendingPlan';
 import SpendingPlanRunningTot from '@/components/SpendingPlanRunningTot';
-//import SpendingPlanRunningTotAllCategories from '@/components/SpendingPlanRunningTotAllCategories';
+import SpendingPlanRunningNewCatsNOTYET from '@/components/SpendingPlanRunningNewCatsNOTYET';
+import SpendingPlanRunningNewCatsAgainYET from '@/components/SpendingPlanRunningNewCatsAgainYET';
 
 // import Testserver from '@/obsolete/Testserver';
 import Spendingplan from '@/models/spendingplanModel';
@@ -51,6 +45,7 @@ const spendingplanslist = await Spendingplan.aggregate([
 }
 ] 
 )
+//const propsProvided = propsProvided
 const thisMonth = new Date().getMonth()+1;//this is default
 const thisYear = new Date().getFullYear()
 
@@ -58,7 +53,7 @@ const thisYear = new Date().getFullYear()
  const dbfilteryear = searchParams?.fyear|| searchParams.fyear ===null ? searchParams.fyear : thisYear;
  const dbfiltermonth = searchParams?.fmonth || searchParams.fyear ===null ? searchParams.fmonth : thisMonth; 
  const filtercategory= searchParams?.category? searchParams?.category : "all-categories"
- 
+
   return (
 
     <>
@@ -76,13 +71,16 @@ const thisYear = new Date().getFullYear()
       
     
       <SpendingPlanList spendingplanslist={spendingplanslist}/>
-      {/* <SpendingPlanRunningTotAllCategories fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} /> */}
+      <h2>SpendingPlanRunningNewCatsNOTYET</h2>
+      <SpendingPlanRunningNewCatsNOTYET fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
+      <SpendingPlanRunningNewCatsAgainYET fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
       {/* <MonthlySpendingPlanAllCatsT fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} /> */}
       <TransactionsListId fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
       <SpendingPlanRunningTot fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
       <MonthlySpendingPlan fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
-    
+    <TransactionsListIdWithCats fyear={dbfilteryear} fmonth={dbfiltermonth} category={filtercategory} />
     <IncomeListDates fyear={dbfilteryear} fmonth={dbfiltermonth} />
+
       {/*<pre><p>Categories available:{JSON.stringify(categories, null, 2)}</p></pre>
     
       <h1 className="largeTxt">Transactions</h1>

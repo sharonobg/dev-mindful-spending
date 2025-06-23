@@ -9,8 +9,18 @@ import User from "@/models/userModel";
 
 //import Transaction from "@/src/models/transactionModel";
 //import { ObjectId } from "mongodb";
-export async function GET(request:NextRequest,props:any){
+export async function GET(req:NextRequest,props:any){
   //send data as JSON
+  const secret = process.env.NEXTAUTH_SECRET;
+      //const secret = await getEncryptedParameter('/prod/NEXTAUTH_SECRET')
+  const token = await getToken({req,secret});
+  if(!token){
+        return NextResponse.json(
+          // {message: "Spendingplan deleted"},
+          // {status: 500}
+          {error: "unauthorized (wrong or expired token)"},
+        {status:403})
+    }
   try{
     const session = await getServerSession(authOptions);
     const sessionUser = session?.user?.email;
@@ -184,12 +194,23 @@ export async function POST(req:NextRequest){
 }
   
 export async function DELETE(req:NextRequest){
+   const secret = process.env.NEXTAUTH_SECRET;
+      const session = await getServerSession(authOptions);
+       const token = await getToken({req,secret});
+        //send data as json
+      const sessionUser = session?.user?.email;
+      const user = await User.findOne({email:sessionUser});
+      const userid = user._id;
+      const id = req.nextUrl.searchParams.get('id');
+      const spendingplan = await Spendingplan.findById(id).populate("authorId");
+     if(spendingplan?.authorId?._id.toString() !== userid.toString()){
+           return new Response(JSON.stringify({message:"Only author can update their spendingplan"}),{status:403})
+       }
     //send data as json
-    const id = req.nextUrl.searchParams.get('id');
+    
     //await connect();
     await Spendingplan.findByIdAndDelete(id);
     return NextResponse.json(
-        
         {message: "Spendingplan deleted"},
         {status: 200}
     )

@@ -12,12 +12,20 @@ import mongoose from "mongoose";
 import { headers } from 'next/headers'
 
 export async function GET(req:NextRequest,{ params }: { params: { id: string } } ){
+    const secret = process.env.NEXTAUTH_SECRET;
+          //const secret = await getEncryptedParameter('/prod/NEXTAUTH_SECRET')
+      const token = await getToken({req,secret});
+      if(!token){
+            return NextResponse.json(
+              // {message: "Spendingplan deleted"},
+              // {status: 500}
+              {error: "unauthorized (wrong or expired token)"},
+            {status:403})
+        }
     try{
         const session = await getServerSession(authOptions);
         const sessionUser = session?.user?.email;
         const user = await User.findOne({email:sessionUser});
-        const userid = user._id;
-        const headersList = headers();
         //console.log('headersList',headersList)
     const transaction = await Transaction.findById(params.id).populate("authorId")
     console.log('GET transaction route',transaction)

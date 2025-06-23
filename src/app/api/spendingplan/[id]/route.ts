@@ -59,18 +59,13 @@ const session = await getServerSession(authOptions);
 
     try{ 
         const data= await req.json()
-        console.log('initial PUT ID sp body',data);
         const spendingplan = await Spendingplan.findById(id).populate("authorId");
-        console.log('id PUT route spendingplan: ',spendingplan)
-        console.log('id route spendingplan data: ',data)
         if(spendingplan?.authorId?._id.toString() !== userid.toString()){
             return new Response(JSON.stringify({message:"Only author can update his spendingplan"}),{status:403})
         }
         const updatedSpendingplan = await Spendingplan.findByIdAndUpdate(id, {$set:{...data} } ,{new: true})
         console.log('updatedSpendingplan PUT',updatedSpendingplan)
     return new Response(JSON.stringify(updatedSpendingplan),{status: 200})
-
-   
     } catch(error) {
         console.log('error api PUT Spendingplan: ',error)
         return new Response(JSON.stringify(null),{status:500})
@@ -98,12 +93,12 @@ const session = await getServerSession(authOptions);
     try{ 
         const body = await req.json()
         const spendingplan = await Spendingplan.findById(id).populate("authorId");
-        console.log('id page spendingplan: ',spendingplan)
+        //console.log('id page spendingplan: ',spendingplan)
         if(spendingplan?.authorId?._id.toString() !== userid){
             return new Response(JSON.stringify({message:"Only author can update his spendingplan"}),{status:403})
         }
         const updatedSpendingplan = await Spendingplan.findOneAndUpdate(id, {$set:{...body} } ,{new: true})
-        console.log('patch updatedSpendingplan',updatedSpendingplan)
+        //console.log('patch updatedSpendingplan',updatedSpendingplan)
     return new Response(JSON.stringify(updatedSpendingplan),{status: 200})
 
 

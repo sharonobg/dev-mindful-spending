@@ -17,26 +17,29 @@ export async function GET(req:NextRequest){
     //const secret = await getEncryptedParameter('/prod/NEXTAUTH_SECRET')
     const token = await getToken({req,secret});
     const session = await getServerSession(authOptions);
-    //console.log('token',token);
+    
     // const sessionUser = session?.user?._id;
     // const user = await User.findOne({email:sessionUser});
     //const userid = user?._id
-    //if(token){
+     if(!token){
+            return NextResponse.json(
+              // {message: "Spendingplan deleted"},
+              // {status: 500}
+              {error: "unauthorized (wrong or expired token)"},
+            {status:403})
+        }
+    
         try{
-            
             const categories= await Category.find().sort({ title: 1 }).lean();
-            console.log('categories api',categories)
+            //console.log('categories api',categories)
             return NextResponse.json(categories)
         }catch(error){
-            console.log("category error", error)
+            console.log("category error no token", error)
             return new Response(JSON.stringify(null), {status:500})
-       // }
+    
     }
-    // else{
-    //     console.log("not logged in - category error")
-    //     return
-
-    // }
+    
+     
     
 }
 //POST will be for the 5 extra categories - TODO
@@ -47,20 +50,23 @@ export async function POST(req:NextRequest){
     const token = await getToken({req,secret});
     const session = await getServerSession(authOptions);
    
-
     
     //const accessToken = request.headers.get("authorization")
     //const thisToken = getToken();
     //const decodedToken = (value: string | undefined)
-    if(!session){
-        
-        return new Response(JSON.stringify({error: "unauthorized (wrong or expired token)"}),{status:403})
-    }
+   if(!token){
+            return NextResponse.json(
+              // {message: "Spendingplan deleted"},
+              // {status: 500}
+              {error: "unauthorized (wrong or expired token)"},
+            {status:403})
+        }
     try{
         const category = await req.json();
-        console.log('newCategory category',category)
+        //console.log('newCategory category',category)
         const newCategory = await Category.create(category);
-        console.log('newCategory',newCategory)
+        //console.log('newCategory',newCategory)
+        console.log('session triggered')
         return new Response(JSON.stringify(newCategory),{status: 201})
     }catch (error){
         return new Response(JSON.stringify(null),{status:500})

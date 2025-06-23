@@ -15,11 +15,11 @@
   form{@apply flex flex-row flex-wrap gap-2 my-2 self-center}
   
   input,button{margin: 5px;}
- ul:empty{display:none} 
+ul:empty{display:none} 
  button.self-start[type='submit']{@apply bg-blue-400 rounded-md py-2 px-3 text-white font-semibold}
  input[type="submit"],button[type="submit"]{@apply justify-center cursor-pointer}
  form input, form select {
-  @apply px-4 py-2 mt-1 mx-5 border border-gray-300 text-gray-500 no-underline p-4 focus:outline-none active:outline-none focus:border-transparent
+  @apply px-4 py-2 mt-1 mx-5 border border-collapse border-gray-300 text-gray-500 no-underline p-4 focus:outline-none active:outline-none focus:border-transparent
 
 }
 form input:hover, form select:hover,input:hover, select:hover,textarea:hover,
@@ -61,7 +61,7 @@ nav a {
 }
 button{@apply w-fit bg-blue-400 rounded-md p-3 text-white font-semibold ml-0}
 button { @apply flex px-4 py-2 rounded-lg hover:opacity-80 }
-.errorStyle,.error {@apply text-red-600}
+.errorStyle,.error{@apply text-red-600}
 .datepickDiv .react-datepicker{
   
 }
@@ -71,7 +71,7 @@ button { @apply flex px-4 py-2 rounded-lg hover:opacity-80 }
 select.but{@apply border-blue-600 text-blue-600 border-2}
 .underline{text-underline-offset: 5px}
 .mycategoryArr{@apply grid gap-3 mb-5 grid-flow-col}
-.hamburger-menu{@apply flex flex-col md:flex-row gap-5 }
+.hamburger-menu{ transition: height 2s ease-in .2s; @apply flex flex-col md:flex-row gap-5 }
 /* .hamburger.open{left:0;transition: 1s;} */
 .dashboardDiv{@apply place-items-center flex flex-col w-full overflow-auto break-words}
 form.form-column{@apply flex flex-col p-4 flex-wrap gap-5 my-3}
@@ -118,8 +118,10 @@ h1.border{@apply border-b-2
 .horizGrid {@apply grid grid-rows-1 overflow-auto bg-white}
 .totals{@apply grid font-bold w-full py-2 border-2 border-collapse border-amber-500 bg-white}
 .horizGrid > div,
-.amberBorder > div{border-width: 1px 0 0 1px; @apply border border-collapse border-amber-500 bg-white content-center align-middle}
-.font-bold.horizGrid > div {margin-top:2px;margin-bottom:-1px; @apply py-2 px-1}
+.amberBorder > div{ border-width:1px 0 0 1px; @apply border-collapse border-amber-500 bg-white content-center align-middle }
+.horizGrid:last-child > div,
+.amberBorder:last-child > div{    border-bottom-width: 1px;}
+.font-bold.horizGrid > div {margin-top:1px; @apply py-2 px-1}
 .layout-grid {
   /* overflow-wrap:anywhere; */
   @apply grid grid-flow-row bg-white 

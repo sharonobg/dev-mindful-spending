@@ -8,14 +8,18 @@ import {NextRequest,NextResponse} from "next/server";
 
 
 export async function GET(req:NextRequest,{ params}: { params:{id: string }}){
-    //  const secret = process.env.NEXTAUTH_SECRET;
-    //     //const secret = await getEncryptedParameter('/prod/NEXTAUTH_SECRET')
-    //     const token = await getToken({req,secret});
-        const session = await getServerSession(authOptions);
-        //console.log('token',token);
-        // const sessionUser = session?.user?._id;
-        // const user = await User.findOne({email:sessionUser});
-        //const userid = user?._id
+   const secret = process.env.NEXTAUTH_SECRET;
+   const token = await getToken({req,secret});
+    
+      
+        if(!token){
+                    return NextResponse.json(
+                      // {message: "Spendingplan deleted"},
+                      // {status: 500}
+                      {error: "unauthorized (wrong or expired token)"},
+                    {status:403})
+                }
+const session = await getServerSession(authOptions);
         if(session){
     try{
     const category = await Category.findById(params.id).lean();
@@ -27,7 +31,17 @@ export async function GET(req:NextRequest,{ params}: { params:{id: string }}){
 }
 
 export async function PUT(req: NextRequest,{ params}: { params:{id: string }}){
-    //await connect();
+   const secret = process.env.NEXTAUTH_SECRET;
+   const token = await getToken({req,secret});
+    
+      
+        if(!token){
+                    return NextResponse.json(
+                      // {message: "Spendingplan deleted"},
+                      // {status: 500}
+                      {error: "unauthorized (wrong or expired token)"},
+                    {status:403})
+                }
     const session = await getServerSession(authOptions);
     if(!session){
         return new Response(JSON.stringify({error: "unauthorized (wrong or expired token)"}),{status:403})

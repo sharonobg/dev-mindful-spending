@@ -12,6 +12,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { BsFillPencilFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import {useEffect} from 'react';
 
 
 export default function TransactionsClientPg(){
@@ -32,9 +33,11 @@ const transactionsAggrMonth = useTransactionsAggrMonth();
    const createTransactionMutation = useTransactionsCreate();
     const deleteTransactionMutation = useDeleteTransactions()
    const handleCreateTransactionSubmit:SubmitHandler<TransactionType> = (data) => {
+    
     createTransactionMutation.mutate(data)
+ 
    }
-
+    
   //  const handleDelete = () => {
   //   alert('will delete soon')
   //  }
@@ -75,20 +78,36 @@ const transactionsAggrMonth = useTransactionsAggrMonth();
   //  };
     const {
         register,
+        reset,
         handleSubmit,
         control,
         setValue,
-        formState:{errors},
+        formState:{isSubmitSuccessful,errors,
+        isSubmitting,},
         //handleSubmitcontrol,
         // formState: { isSubmitting },,
-        watch} = useForm<TransactionType>();
-    const watchCategory = watch("categoryId");
-    const watchAcctype = watch("acctype");
+        watch} = useForm<TransactionType>({
+          shouldUnregister: true,
+              mode:"onChange",
+              defaultValues:{}
+            }
+          );
+    // const watchCategory = watch("categoryId");
+    // const watchAcctype = watch("acctype");
+    useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset()
+    }
+   }, [isSubmitSuccessful])
     const handleDelete = (id:any) => deleteTransactionMutation.mutate(id)
     //     if(categoriesManyQuery.isPending|| getT){
 //      return <span>Waiting for Categories ...</span>
 //  }
-if(howManyFetching > 0){return <span>Waiting ...</span>}
+//if(howManyFetching > 0){return <span>Waiting ...</span>}
+
+if (transactionsAggrMonth.isPending) {
+  return 'One minute - getting your Transactions...'
+}
     return (
       <>
       <div className="flex flex-col">
@@ -100,7 +119,9 @@ if(howManyFetching > 0){return <span>Waiting ...</span>}
         
         <h2>Create Transaction</h2>
         <h2>Context: {fmonth}/{fyear}/{fcategory}</h2>
-        <form className="flex flex-col" onSubmit={handleSubmit(handleCreateTransactionSubmit)}>
+        <form className="flex flex-col" onSubmit={
+          handleSubmit(handleCreateTransactionSubmit)
+          }>
             {/* <h2>categories:{JSON.stringify(categoriesManyQuery.data,null,2)}
               </h2> */}
               <label>Choose a Date:</label>
@@ -139,7 +160,7 @@ if(howManyFetching > 0){return <span>Waiting ...</span>}
                        
                          {/* {...register(`categories.${category._id}`)} */}
                        </select>
-                       <p>Watch Category:{watchCategory}</p>
+                       
                        <label>SelectAccount type:</label>
                         <select
                              {...register("acctype",{required:"Please select an account type"})}>
@@ -148,7 +169,7 @@ if(howManyFetching > 0){return <span>Waiting ...</span>}
                               <option value="bank_account">Bank Account</option>
                               <option value="other">Other</option>
                              </select>
-                             <p>Acctype: {watchAcctype}</p>
+                             
                             <p className="errorStyle">{errors.acctype?.message}</p>
                            
                             <label>Description:</label>
@@ -171,7 +192,13 @@ if(howManyFetching > 0){return <span>Waiting ...</span>}
                             />
                            {/*} <p>amount:{watchAmount}</p>*/}
                             {/* <p className="errorStyle">{errors.amount?.message}</p> */}
-                    <input type="submit" disabled={createTransactionMutation.isPending} value={createTransactionMutation.isPending ? "Submitting..." : "Submit"} />
+                    <input type="submit" 
+                    //disabled={createTransactionMutation.isPending} 
+                    disabled={isSubmitting}
+                    //value={createTransactionMutation.isPending ? "Submitting..." : "Submit"}
+                    value={isSubmitting ? 'Submitting...' : 'Submit'}
+                    // isSubmitSuccessful={reset()} 
+                    />
         </form>
 
         <h2>Transactions:</h2>

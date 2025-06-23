@@ -29,20 +29,21 @@ const Register = () => {
     const validateForm = () => { 
         let errors = {usernamemess:"",namemess:"",emailmess:""}; 
         if (!name) { 
-            errors.namemess = 'name must have at least 1 uppercase letter, 1 lower case letter and at least 6 characters.'; 
-        } else if (!/(?=.*[A-Z]).{8,25}/.test(name)) { 
-            errors.namemess = 'name must have at least 1 uppercase letter, 1 lower case letter and at least 6 characters.'; 
+            errors.namemess = 'name must have at least 1 uppercase letter, 1 lower case letter and at least 2 characters.'; 
+        } else if (!/(?=.*[A-Z]).{2,25}/.test(name)) { 
+            errors.namemess = 'name must have at least 1 uppercase letter, 1 lower case letter and at least 2 characters.'; 
             if(!valid){setErrors(errors)}
         } 
         if (!username) { 
-            errors.usernamemess = 'username must have at least 1 uppercase letter, 1 lower case letter and at least 6 characters.'; 
-        } else if (!/(?=.*[a-z])(?=.*[A-Z]).{8,25}/.test(name)) { 
-            errors.usernamemess = 'username must have at least 1 uppercase letter, 1 lower case letter and at least 6 characters.'; 
+            errors.usernamemess = 'username must have at least 1 uppercase letter, 1 lower case letter and at least 2 characters.'; 
+        } else if (!/(?=.*[a-z])(?=.*[A-Z]).{2,25}/.test(name)) { 
+            errors.usernamemess = 'username must have at least 1 uppercase letter, 1 lower case letter and at least 2 characters.'; 
             if(!valid){setErrors(errors)}
         }
         if (!email) { 
-            errors.emailmess = 'Email is required.'; 
-        } else if (!/^(.+)@(.+)$/.test(email)) { 
+            errors.emailmess = 'Email is required.';
+             
+        } else if (!/^[a-zA-Z0-9._%±]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/.test(email)) { 
             errors.emailmess = 'Please add email in correct format.'; 
         }
         setErrors(errors); 
@@ -94,7 +95,7 @@ const Register = () => {
                         placeholder='Name'
                         title="Must contain at least one uppercase letter, one lowercase letter and at least 6 characters" 
                         required
-                        pattern="(?=.*[a-z])(?=.*[A-Z]).{6,25}"
+                        pattern="(?=.*[a-z])(?=.*[A-Z]).{2,25}"
                          />
                     <label className="my-0 p-0 text-blue-500" htmlFor="username">Username:</label>
                     <input
@@ -102,9 +103,9 @@ const Register = () => {
                         className="my-0 p-2 border border-gray-300 rounded-md"
                         type="text"
                         placeholder='Username'
-                        title="Must contain at least one uppercase letter, one lowercase letter and at least 6 characters" 
+                        title="Must contain at least one uppercase letter, one lowercase letter and at least 2 characters" 
                         required
-                        pattern="(?=.*[a-z])(?=.*[A-Z]).{6,25}"
+                        pattern="(?=.*[a-z])(?=.*[A-Z]).{2,25}"
                          />
                     <label className="my-0 p-0 text-blue-500" htmlFor="email">Email:</label>
                     <input
@@ -113,7 +114,7 @@ const Register = () => {
                         placeholder='Email'
                         title="Must be a valid email syntax" 
                         required
-                        pattern="^(.+)@(.+)$"
+                        pattern="^[a-zA-Z0-9._%±]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
                         onChange={(e)=>setEmail(e.target.value)} />
                         <h2>You will be redirected to the login page to complete your registration by verifying your email</h2>
                         <button className="bg-blue-400 rounded-md p-3 text-white font-semibold" type="submit">Register</button>
